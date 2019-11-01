@@ -10,6 +10,7 @@ import static co.streamx.fluent.mongo.grammar.FluentProjections.include;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.ascending;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.descending;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.orderBy;
+import static co.streamx.fluent.mongo.grammar.FluentUpdates.pullByFilter;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
@@ -129,5 +130,16 @@ public class Basic implements CommonTest, BasicTypes {
         Bson filter = person.sort(p -> orderBy(ascending(p.getBorn()), descending(p.getName())));
 
         assertQuery(filter, "{ \"born\" : 1, \"name\" : -1 }");
+    }
+
+    @Test
+    public void testUpdate() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        String string = "xyz";
+        Bson filter = person.update(p -> pullByFilter(elemMatch(p.getActedMovies(), m -> m.getTagline() == string)));
+
+        assertQuery(filter, "{ \"$pull\" : { \"actedMovies\" : { \"$elemMatch\" : { \"tagline\" : \"xyz\" } } } }");
     }
 }

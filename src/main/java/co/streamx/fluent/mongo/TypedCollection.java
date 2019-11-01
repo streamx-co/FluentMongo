@@ -5,6 +5,7 @@ import org.bson.conversions.Bson;
 import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.grammar.Projection;
 import co.streamx.fluent.mongo.grammar.Sort;
+import co.streamx.fluent.mongo.grammar.Update;
 
 public interface TypedCollection<T> {
     default Bson filter(Function1<T, Boolean> predicate) {
@@ -17,5 +18,9 @@ public interface TypedCollection<T> {
 
     default Bson sort(Function1<T, Sort> sort) {
         return FluentMongo.process(sort, new GenericInterpreter());
+    }
+
+    default Bson update(Function1<T, Update> update) {
+        return FluentMongo.process(update, new FilterInterpreter());
     }
 }
