@@ -3,6 +3,7 @@ package co.streamx.fluent.mongo;
 import org.bson.conversions.Bson;
 
 import co.streamx.fluent.mongo.functions.Function1;
+import co.streamx.fluent.mongo.grammar.Index;
 import co.streamx.fluent.mongo.grammar.Projection;
 import co.streamx.fluent.mongo.grammar.Sort;
 import co.streamx.fluent.mongo.grammar.Update;
@@ -22,5 +23,9 @@ public interface TypedCollection<T> {
 
     default Bson update(Function1<T, Update> update) {
         return FluentMongo.process(update, new FilterInterpreter());
+    }
+
+    default Bson index(Function1<T, Index> index) {
+        return FluentMongo.process(index, new FilterInterpreter());
     }
 }

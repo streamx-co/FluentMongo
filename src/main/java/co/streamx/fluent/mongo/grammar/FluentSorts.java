@@ -10,12 +10,12 @@ import co.streamx.fluent.mongo.notation.NestedExpression;
 public interface FluentSorts {
 
     @SafeVarargs
-    static <TItem> Sort ascending(@FieldName TItem... field) {
+    static <TItem> Sort ascending(@FieldName TItem... fields) {
         throw new UnsupportedOperationException();
     }
 
     @SafeVarargs
-    static <TItem> Sort descending(@FieldName TItem... field) {
+    static <TItem> Sort descending(@FieldName TItem... fields) {
         throw new UnsupportedOperationException();
     }
 

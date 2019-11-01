@@ -4,6 +4,7 @@ import static co.streamx.fluent.mongo.grammar.FluentFilters.and;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.elemMatch;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.filter;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.regex;
+import static co.streamx.fluent.mongo.grammar.FluentIndexes.hashed;
 import static co.streamx.fluent.mongo.grammar.FluentProjections.excludeId;
 import static co.streamx.fluent.mongo.grammar.FluentProjections.fields;
 import static co.streamx.fluent.mongo.grammar.FluentProjections.include;
@@ -141,5 +142,15 @@ public class Basic implements CommonTest, BasicTypes {
         Bson filter = person.update(p -> pullByFilter(elemMatch(p.getActedMovies(), m -> m.getTagline() == string)));
 
         assertQuery(filter, "{ \"$pull\" : { \"actedMovies\" : { \"$elemMatch\" : { \"tagline\" : \"xyz\" } } } }");
+    }
+
+    @Test
+    public void testIndex() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.index(p -> hashed(p.getBorn()));
+
+        assertQuery(filter, "{ \"born\" : \"hashed\" }");
     }
 }
