@@ -1,4 +1,4 @@
-package co.streamx.fluent.mongo;
+package co.streamx.fluent.mongo.grammar;
 
 import java.util.Collection;
 

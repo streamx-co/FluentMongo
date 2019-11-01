@@ -3,6 +3,8 @@ package co.streamx.fluent.mongo;
 import org.bson.conversions.Bson;
 
 import co.streamx.fluent.mongo.functions.Function1;
+import co.streamx.fluent.mongo.grammar.Projection;
+import co.streamx.fluent.mongo.grammar.Sort;
 
 public interface TypedCollection<T> {
     default Bson filter(Function1<T, Boolean> predicate) {

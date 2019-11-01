@@ -1,15 +1,15 @@
 package co.streamx.fluent.mongo;
 
-import static co.streamx.fluent.mongo.FluentFilters.and;
-import static co.streamx.fluent.mongo.FluentFilters.elemMatch;
-import static co.streamx.fluent.mongo.FluentFilters.filter;
-import static co.streamx.fluent.mongo.FluentFilters.regex;
-import static co.streamx.fluent.mongo.FluentProjections.excludeId;
-import static co.streamx.fluent.mongo.FluentProjections.fields;
-import static co.streamx.fluent.mongo.FluentProjections.include;
-import static co.streamx.fluent.mongo.FluentSorts.ascending;
-import static co.streamx.fluent.mongo.FluentSorts.descending;
-import static co.streamx.fluent.mongo.FluentSorts.orderBy;
+import static co.streamx.fluent.mongo.grammar.FluentFilters.and;
+import static co.streamx.fluent.mongo.grammar.FluentFilters.elemMatch;
+import static co.streamx.fluent.mongo.grammar.FluentFilters.filter;
+import static co.streamx.fluent.mongo.grammar.FluentFilters.regex;
+import static co.streamx.fluent.mongo.grammar.FluentProjections.excludeId;
+import static co.streamx.fluent.mongo.grammar.FluentProjections.fields;
+import static co.streamx.fluent.mongo.grammar.FluentProjections.include;
+import static co.streamx.fluent.mongo.grammar.FluentSorts.ascending;
+import static co.streamx.fluent.mongo.grammar.FluentSorts.descending;
+import static co.streamx.fluent.mongo.grammar.FluentSorts.orderBy;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
