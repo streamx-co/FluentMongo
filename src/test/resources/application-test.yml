@@ -1,0 +1,12 @@
+
+debug: false # Enable debug logs.
+trace: false # Enable trace logs.
+
+logging:
+    level:
+        ROOT: INFO
+        co.streamx.fluent.mongo: DEBUG
+
+spring:
+    main:
+        banner-mode: "off"
