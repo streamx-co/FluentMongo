@@ -28,16 +28,16 @@ import co.streamx.fluent.mongo.notation.Filter;
 import co.streamx.fluent.mongo.notation.Function;
 import lombok.SneakyThrows;
 
-final class FilterInterpreter extends SimpleExpressionVisitor {
+final class GenericInterpreter extends SimpleExpressionVisitor {
 
     public Bson popResult() {
         return bsons.pop();
     }
 
-    private Deque<Bson> bsons = new ArrayDeque<>();
+    private final Deque<Bson> bsons = new ArrayDeque<>();
 
-    private Deque<String> paths = new ArrayDeque<>();
-    private Deque<Object> constants = new ArrayDeque<>();
+    private final Deque<String> paths = new ArrayDeque<>();
+    private final Deque<Object> constants = new ArrayDeque<>();
 
     private List<Expression> currentArguments;
 
