@@ -26,6 +26,6 @@ public interface TypedCollection<T> {
     }
 
     default Bson index(Function1<T, Index> index) {
-        return FluentMongo.process(index, new FilterInterpreter());
+        return FluentMongo.process(index, new GenericInterpreter());
     }
 }
