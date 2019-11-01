@@ -8,7 +8,7 @@ import com.mongodb.client.model.Projections;
 
 import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.Filter;
+import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
 
 @Function(factory = Projections.class)
@@ -32,7 +32,7 @@ public interface FluentProjections {
     }
 
     static <TItem> Projection elemMatch(@FieldName Collection<TItem> field,
-                                        @Filter Function1<TItem, Boolean> filter) {
+                                        @NestedExpression Function1<TItem, Boolean> filter) {
         throw new UnsupportedOperationException();
     }
 
@@ -56,7 +56,7 @@ public interface FluentProjections {
         throw new UnsupportedOperationException();
     }
 
-    static Projection fields(@Filter Projection... projections) {
+    static Projection fields(@NestedExpression Projection... projections) {
         throw new UnsupportedOperationException();
     }
 }

@@ -19,7 +19,7 @@ import co.streamx.fluent.extree.expression.NewArrayInitExpression;
 import co.streamx.fluent.extree.expression.ParameterExpression;
 import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.Filter;
+import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
 import lombok.SneakyThrows;
 
@@ -88,7 +88,7 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                     }
                 } else {
                     int indexOfFilter = Lists.indexOf(parameterAnnotations,
-                            a -> Filter.class.isAssignableFrom(a.getClass()));
+                            a -> NestedExpression.class.isAssignableFrom(a.getClass()));
                     if (indexOfFilter >= 0) {
                         if (i == varArg) {
                             parameterTypes[i] = Bson[].class;

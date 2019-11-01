@@ -13,7 +13,7 @@ import com.mongodb.client.model.geojson.Point;
 
 import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.Filter;
+import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
 
 @Function(factory = Filters.class)
@@ -70,19 +70,19 @@ public interface FluentFilters {
         throw new UnsupportedOperationException();
     }
 
-    static boolean and(@Filter final boolean... filters) {
+    static boolean and(@NestedExpression final boolean... filters) {
         throw new UnsupportedOperationException();
     }
 
-    static boolean or(@Filter final boolean... filters) {
+    static boolean or(@NestedExpression final boolean... filters) {
         throw new UnsupportedOperationException();
     }
 
-    static boolean not(@Filter final boolean filter) {
+    static boolean not(@NestedExpression final boolean filter) {
         throw new UnsupportedOperationException();
     }
 
-    static boolean nor(@Filter final boolean... filters) {
+    static boolean nor(@NestedExpression final boolean... filters) {
         throw new UnsupportedOperationException();
     }
 
@@ -139,7 +139,7 @@ public interface FluentFilters {
     }
 
     static <TItem> boolean elemMatch(@FieldName final Collection<TItem> field,
-                                     @Filter final Function1<TItem, Boolean> filter) {
+                                     @NestedExpression final Function1<TItem, Boolean> filter) {
         throw new UnsupportedOperationException();
     }
 
