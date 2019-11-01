@@ -7,6 +7,9 @@ import static co.streamx.fluent.mongo.FluentFilters.regex;
 import static co.streamx.fluent.mongo.FluentProjections.excludeId;
 import static co.streamx.fluent.mongo.FluentProjections.fields;
 import static co.streamx.fluent.mongo.FluentProjections.include;
+import static co.streamx.fluent.mongo.FluentSorts.ascending;
+import static co.streamx.fluent.mongo.FluentSorts.descending;
+import static co.streamx.fluent.mongo.FluentSorts.orderBy;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
@@ -106,5 +109,25 @@ public class Basic implements CommonTest, BasicTypes {
         });
 
         assertQuery(filter, "{ \"born\" : 1, \"name\" : 1, \"_id\" : 0 }");
+    }
+
+    @Test
+    public void testSort() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.sort(p -> ascending(p.getBorn()));
+
+        assertQuery(filter, "{ \"born\" : 1 }");
+    }
+
+    @Test
+    public void testSort1() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.sort(p -> orderBy(ascending(p.getBorn()), descending(p.getName())));
+
+        assertQuery(filter, "{ \"born\" : 1, \"name\" : -1 }");
     }
 }

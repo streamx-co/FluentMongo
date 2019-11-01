@@ -12,4 +12,8 @@ public interface TypedCollection<T> {
     default Bson project(Function1<T, Projection> projection) {
         return FluentMongo.process(projection, new FilterInterpreter());
     }
+
+    default Bson sort(Function1<T, Sort> sort) {
+        return FluentMongo.process(sort, new GenericInterpreter());
+    }
 }
