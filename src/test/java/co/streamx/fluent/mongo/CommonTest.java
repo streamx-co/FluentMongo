@@ -1,4 +1,4 @@
-package co.streamx.fluent.Mongo;
+package co.streamx.fluent.mongo;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;

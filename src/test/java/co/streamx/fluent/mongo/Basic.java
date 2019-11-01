@@ -1,9 +1,9 @@
-package co.streamx.fluent.Mongo;
+package co.streamx.fluent.mongo;
 
-import static co.streamx.fluent.Mongo.QueryOperators.and;
-import static co.streamx.fluent.Mongo.QueryOperators.elemMatch;
-import static co.streamx.fluent.Mongo.QueryOperators.filter;
-import static co.streamx.fluent.Mongo.QueryOperators.regex;
+import static co.streamx.fluent.mongo.QueryOperators.and;
+import static co.streamx.fluent.mongo.QueryOperators.elemMatch;
+import static co.streamx.fluent.mongo.QueryOperators.filter;
+import static co.streamx.fluent.mongo.QueryOperators.regex;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;

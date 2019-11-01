@@ -1,4 +1,4 @@
-package co.streamx.fluent.Mongo;
+package co.streamx.fluent.mongo;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
