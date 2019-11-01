@@ -26,9 +26,9 @@ public final class FluentMongo {
         return (TypedCollection<T>) typed;
     }
 
-    static <T> Bson process(Function1<T, Boolean> predicate,
+    static <T> Bson process(Function1<T, ?> lambda,
                             GenericInterpreter interpreter) {
-        LambdaExpression<?> e = LambdaExpression.parse(predicate);
+        LambdaExpression<?> e = LambdaExpression.parse(lambda);
         interpreter.visit(e);
 
         return interpreter.popResult();

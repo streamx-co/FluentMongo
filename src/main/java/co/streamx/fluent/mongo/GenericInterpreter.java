@@ -79,8 +79,13 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                 int indexOfField = Lists.indexOf(parameterAnnotations,
                         a -> FieldName.class.isAssignableFrom(a.getClass()));
                 if (indexOfField >= 0) {
-                    parameterTypes[indexOfField] = String.class;
-                    args[i] = paths.pop();
+                    if (i == varArg) {
+                        parameterTypes[i] = String[].class;
+                        args[i] = getVarArgs((NewArrayInitExpression) arg, String[]::new, paths);
+                    } else {
+                        parameterTypes[indexOfField] = String.class;
+                        args[i] = paths.pop();
+                    }
                 } else {
                     int indexOfFilter = Lists.indexOf(parameterAnnotations,
                             a -> Filter.class.isAssignableFrom(a.getClass()));

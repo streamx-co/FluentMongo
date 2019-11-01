@@ -8,4 +8,8 @@ public interface TypedCollection<T> {
     default Bson filter(Function1<T, Boolean> predicate) {
         return FluentMongo.process(predicate, new FilterInterpreter());
     }
+
+    default Bson project(Function1<T, Projection> projection) {
+        return FluentMongo.process(projection, new GenericInterpreter());
+    }
 }

@@ -4,6 +4,7 @@ import static co.streamx.fluent.mongo.FluentFilters.and;
 import static co.streamx.fluent.mongo.FluentFilters.elemMatch;
 import static co.streamx.fluent.mongo.FluentFilters.filter;
 import static co.streamx.fluent.mongo.FluentFilters.regex;
+import static co.streamx.fluent.mongo.FluentProjections.include;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
@@ -79,5 +80,17 @@ public class Basic implements CommonTest, BasicTypes {
 
         assertQuery(ff,
                 "{ \"$or\" : [{ \"born\" : { \"$lt\" : 5 }, \"name\" : \"dfg\" }, { \"born\" : { \"$gte\" : 6 }, \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" } }] }");
+    }
+
+    @Test
+    public void testProjection() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.project(p -> {
+            return include(p.getBorn(), p.getName());
+        });
+
+        assertQuery(filter, "{ \"born\" : 1, \"name\" : 1 }");
     }
 }
