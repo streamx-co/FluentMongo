@@ -4,6 +4,8 @@ import static co.streamx.fluent.mongo.FluentFilters.and;
 import static co.streamx.fluent.mongo.FluentFilters.elemMatch;
 import static co.streamx.fluent.mongo.FluentFilters.filter;
 import static co.streamx.fluent.mongo.FluentFilters.regex;
+import static co.streamx.fluent.mongo.FluentProjections.excludeId;
+import static co.streamx.fluent.mongo.FluentProjections.fields;
 import static co.streamx.fluent.mongo.FluentProjections.include;
 
 import org.bson.conversions.Bson;
@@ -92,5 +94,17 @@ public class Basic implements CommonTest, BasicTypes {
         });
 
         assertQuery(filter, "{ \"born\" : 1, \"name\" : 1 }");
+    }
+
+    @Test
+    public void testProjection1() {
+
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.project(p -> {
+            return fields(include(p.getBorn(), p.getName()), excludeId());
+        });
+
+        assertQuery(filter, "{ \"born\" : 1, \"name\" : 1, \"_id\" : 0 }");
     }
 }

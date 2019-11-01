@@ -268,7 +268,7 @@ public interface FluentFilters {
         throw new UnsupportedOperationException();
     }
 
-    @Function(factory = Filters.class, passThrough = true)
+    @Function(factory = Object.class, passThrough = true)
     static boolean filter(final Bson filter) {
         throw new UnsupportedOperationException();
     }

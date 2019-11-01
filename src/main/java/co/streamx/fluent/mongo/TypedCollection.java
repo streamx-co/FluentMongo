@@ -10,6 +10,6 @@ public interface TypedCollection<T> {
     }
 
     default Bson project(Function1<T, Projection> projection) {
-        return FluentMongo.process(projection, new GenericInterpreter());
+        return FluentMongo.process(projection, new FilterInterpreter());
     }
 }
