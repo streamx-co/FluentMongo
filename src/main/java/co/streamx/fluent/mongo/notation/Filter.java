@@ -1,4 +1,4 @@
-package co.streamx.fluent.mongo;
+package co.streamx.fluent.mongo.notation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

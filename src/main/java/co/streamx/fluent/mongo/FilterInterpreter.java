@@ -23,6 +23,9 @@ import co.streamx.fluent.extree.expression.NewArrayInitExpression;
 import co.streamx.fluent.extree.expression.ParameterExpression;
 import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
 import co.streamx.fluent.extree.expression.UnaryExpression;
+import co.streamx.fluent.mongo.notation.FieldName;
+import co.streamx.fluent.mongo.notation.Filter;
+import co.streamx.fluent.mongo.notation.Function;
 import lombok.SneakyThrows;
 
 final class FilterInterpreter extends SimpleExpressionVisitor {
