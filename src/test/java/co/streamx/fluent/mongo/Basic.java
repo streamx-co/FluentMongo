@@ -1,9 +1,9 @@
 package co.streamx.fluent.mongo;
 
-import static co.streamx.fluent.mongo.QueryOperators.and;
-import static co.streamx.fluent.mongo.QueryOperators.elemMatch;
-import static co.streamx.fluent.mongo.QueryOperators.filter;
-import static co.streamx.fluent.mongo.QueryOperators.regex;
+import static co.streamx.fluent.mongo.FluentFilters.and;
+import static co.streamx.fluent.mongo.FluentFilters.elemMatch;
+import static co.streamx.fluent.mongo.FluentFilters.filter;
+import static co.streamx.fluent.mongo.FluentFilters.regex;
 
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,10 @@ public class Basic implements CommonTest, BasicTypes {
     private Bson extractedTest1(int born,
                                 int born1,
                                 String string) {
-        Bson filter = FluentBson.filter((Person p) -> {
+        
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        
+        Bson filter = person.filter(p -> {
             return p.getBorn() < born && p.getName() == string || p.getBorn() >= born1 && regex(p.getName(), ".*", "");
         });
         return filter;
@@ -38,7 +41,9 @@ public class Basic implements CommonTest, BasicTypes {
         int born = 5;
         String string = "dfg";
 
-        Bson filter = FluentBson.filter((Person p) -> {
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.filter(p -> {
             return and(p.getBorn() < born, p.getName() == string); //
         });
 
@@ -50,7 +55,9 @@ public class Basic implements CommonTest, BasicTypes {
 
         String string = "dfg";
 
-        Bson filter = FluentBson.filter((Person p) -> {
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson filter = person.filter(p -> {
             return elemMatch(p.getActedMovies(), m -> m.getTagline() == string);
         });
 
@@ -66,7 +73,9 @@ public class Basic implements CommonTest, BasicTypes {
 
         Bson f = extractedTest1(born, born1, string);
 
-        Bson ff = FluentBson.filter((Person p) -> filter(f));
+        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+
+        Bson ff = person.filter(p -> filter(f));
 
         assertQuery(ff,
                 "{ \"$or\" : [{ \"born\" : { \"$lt\" : 5 }, \"name\" : \"dfg\" }, { \"born\" : { \"$gte\" : 6 }, \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" } }] }");

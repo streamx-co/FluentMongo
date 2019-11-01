@@ -17,7 +17,7 @@ import co.streamx.fluent.mongo.notation.Filter;
 import co.streamx.fluent.mongo.notation.Function;
 
 @Function(factory = Filters.class)
-public interface QueryOperators {
+public interface FluentFilters {
     static <TItem> boolean eq(@FieldName final TItem field,
                               final TItem value) {
         throw new UnsupportedOperationException();
