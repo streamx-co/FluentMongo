@@ -11,7 +11,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.geojson.Geometry;
 import com.mongodb.client.model.geojson.Point;
 
-import co.streamx.fluent.functions.Function1;
+import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.notation.FieldName;
 import co.streamx.fluent.mongo.notation.Filter;
 import co.streamx.fluent.mongo.notation.Function;
