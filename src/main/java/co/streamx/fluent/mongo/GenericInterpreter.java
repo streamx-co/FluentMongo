@@ -19,8 +19,8 @@ import co.streamx.fluent.extree.expression.NewArrayInitExpression;
 import co.streamx.fluent.extree.expression.ParameterExpression;
 import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
+import co.streamx.fluent.mongo.notation.NestedExpression;
 import lombok.SneakyThrows;
 
 class GenericInterpreter extends SimpleExpressionVisitor {
