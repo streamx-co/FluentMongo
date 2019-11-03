@@ -13,13 +13,29 @@ import com.mongodb.client.model.geojson.Point;
 
 import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
+import co.streamx.fluent.mongo.notation.NestedExpression;
+import co.streamx.fluent.mongo.notation.ParamType;
 
 @Function(factory = Filters.class)
 public interface FluentFilters {
-    static <TItem> boolean eq(@FieldName final TItem field,
-                              final TItem value) {
+
+    static <TItem extends Comparable<TItem>> boolean eq(@ParamType(Object.class) final TItem value) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem extends Comparable<TItem>> boolean eq(@FieldName final TItem field,
+                                                        @ParamType(Object.class) final TItem value) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem extends Comparable<TItem>> boolean eq(@FieldName final Collection<TItem> field,
+                                                        @ParamType(Object.class) final TItem value) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem> boolean eq(@FieldName final Collection<TItem> field,
+                              @ParamType(Object.class) final Collection<TItem> values) {
         throw new UnsupportedOperationException();
     }
 
@@ -28,45 +44,45 @@ public interface FluentFilters {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean gt(@FieldName final TItem field,
-                              final TItem value) {
+    static <TItem extends Comparable<TItem>> boolean gt(@FieldName final TItem field,
+                                                        @ParamType(Object.class) final TItem value) {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean lt(@FieldName final TItem field,
-                              final TItem value) {
+    static <TItem extends Comparable<TItem>> boolean lt(@FieldName final TItem field,
+                                                        @ParamType(Object.class) final TItem value) {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean gte(@FieldName final TItem field,
-                               final TItem value) {
+    static <TItem extends Comparable<TItem>> boolean gte(@FieldName final TItem field,
+                                                         @ParamType(Object.class) final TItem value) {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean lte(@FieldName final TItem field,
-                               final TItem value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @SafeVarargs
-    static <TItem> boolean in(@FieldName final TItem field,
-                              final TItem... values) {
-        throw new UnsupportedOperationException();
-    }
-
-    static <TItem> boolean in(@FieldName final TItem field,
-                              final Iterable<TItem> values) {
+    static <TItem extends Comparable<TItem>> boolean lte(@FieldName final TItem field,
+                                                         @ParamType(Object.class) final TItem value) {
         throw new UnsupportedOperationException();
     }
 
     @SafeVarargs
-    static <TItem> boolean nin(@FieldName final TItem field,
-                               final TItem... values) {
+    static <TItem extends Comparable<TItem>> boolean in(@FieldName final TItem field,
+                                                        @ParamType(Object[].class) final TItem... values) {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean nin(@FieldName final TItem field,
-                               final Iterable<TItem> values) {
+    static <TItem extends Comparable<TItem>> boolean in(@FieldName final TItem field,
+                                                        @ParamType(Object.class) final Iterable<TItem> values) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SafeVarargs
+    static <TItem extends Comparable<TItem>> boolean nin(@FieldName final TItem field,
+                                                         @ParamType(Object[].class) final TItem... values) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem extends Comparable<TItem>> boolean nin(@FieldName final TItem field,
+                                                         @ParamType(Object.class) final Iterable<TItem> values) {
         throw new UnsupportedOperationException();
     }
 
@@ -128,13 +144,13 @@ public interface FluentFilters {
     }
 
     @SafeVarargs
-    static <TItem> boolean all(@FieldName final Collection<TItem> field,
-                               final TItem... values) {
+    static <TItem extends Comparable<TItem>> boolean all(@FieldName final Collection<TItem> field,
+                                                         @ParamType(Object[].class) final TItem... values) {
         throw new UnsupportedOperationException();
     }
 
-    static <TItem> boolean all(@FieldName final Collection<TItem> field,
-                               final Iterable<TItem> values) {
+    static <TItem extends Comparable<TItem>> boolean all(@FieldName final Collection<TItem> field,
+                                                         @ParamType(Object.class) final Iterable<TItem> values) {
         throw new UnsupportedOperationException();
     }
 

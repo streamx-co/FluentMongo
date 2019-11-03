@@ -17,7 +17,7 @@ import co.streamx.fluent.mongo.notation.NestedExpression;
 @Function(factory = Updates.class)
 public interface FluentUpdates {
 
-    static Update combine(final Update... updates) {
+    static Update combine(@NestedExpression final Update... updates) {
         throw new UnsupportedOperationException();
     }
 

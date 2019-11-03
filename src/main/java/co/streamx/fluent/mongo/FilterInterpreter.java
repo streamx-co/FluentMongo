@@ -16,6 +16,8 @@ final class FilterInterpreter extends GenericInterpreter {
 
         super.visit(e);
 
+        String path;
+        Object constant;
         switch (e.getExpressionType()) {
         case ExpressionType.LogicalAnd:
             Bson b2a = bsons.pop();
@@ -29,23 +31,35 @@ final class FilterInterpreter extends GenericInterpreter {
             break;
 
         case ExpressionType.Equal:
-            bsons.push(Filters.eq(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(Filters.eq(path == null ? "$eq" : path, constant));
             break;
         case ExpressionType.NotEqual:
-            bsons.push(Filters.ne(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(path == null ? Filters.eq("$ne", constant) : Filters.ne(path, constant));
             break;
 
         case ExpressionType.GreaterThan:
-            bsons.push(Filters.gt(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(path == null ? Filters.eq("$gt", constant) : Filters.gt(path, constant));
             break;
         case ExpressionType.GreaterThanOrEqual:
-            bsons.push(Filters.gte(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(path == null ? Filters.eq("$gte", constant) : Filters.gte(path, constant));
             break;
         case ExpressionType.LessThan:
-            bsons.push(Filters.lt(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(path == null ? Filters.eq("$lt", constant) : Filters.lt(path, constant));
             break;
         case ExpressionType.LessThanOrEqual:
-            bsons.push(Filters.lte(paths.pop(), constants.pop()));
+            path = paths.poll();
+            constant = constants.pop();
+            bsons.push(path == null ? Filters.eq("$lte", constant) : Filters.lte(path, constant));
             break;
         default:
             throw new IllegalArgumentException(
@@ -59,12 +73,16 @@ final class FilterInterpreter extends GenericInterpreter {
     public Expression visit(UnaryExpression e) {
         super.visit(e);
 
+        String path;
         switch (e.getExpressionType()) {
         case ExpressionType.IsNull:
+            path = paths.poll();
+            bsons.push(path == null ? Filters.eq("$eq", null) : Filters.eq(path, null));
             bsons.push(Filters.eq(paths.pop(), null));
             break;
         case ExpressionType.IsNonNull:
-            bsons.push(Filters.ne(paths.pop(), null));
+            path = paths.poll();
+            bsons.push(path == null ? Filters.eq("$ne", null) : Filters.ne(path, null));
             break;
         case ExpressionType.Convert:
             break;

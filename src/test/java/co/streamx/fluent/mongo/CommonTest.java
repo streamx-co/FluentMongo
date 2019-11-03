@@ -11,15 +11,22 @@ import org.bson.conversions.Bson;
 import com.mongodb.MongoClientSettings;
 
 public interface CommonTest {
-    default void assertQuery(Bson filter,
+
+    final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+            fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+    default void assertQuery(Bson bson,
                              String expected) {
 
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-
-        String json = filter.toBsonDocument(null, pojoCodecRegistry).toJson();
-
-        System.out.println(json);
+        String json = print(bson);
         assertEquals(expected, json);
+    }
+
+    static String print(Bson bson) {
+        if (bson == null)
+            return null;
+        String json = bson.toBsonDocument(null, pojoCodecRegistry).toJson();
+        System.out.println(json);
+        return json;
     }
 }

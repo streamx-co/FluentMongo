@@ -21,6 +21,7 @@ import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
 import co.streamx.fluent.mongo.notation.FieldName;
 import co.streamx.fluent.mongo.notation.Function;
 import co.streamx.fluent.mongo.notation.NestedExpression;
+import co.streamx.fluent.mongo.notation.ParamType;
 import lombok.SneakyThrows;
 
 class GenericInterpreter extends SimpleExpressionVisitor {
@@ -84,7 +85,7 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                         args[i] = getVarArgs((NewArrayInitExpression) arg, String[]::new, paths);
                     } else {
                         parameterTypes[indexOfField] = String.class;
-                        args[i] = paths.pop();
+                        args[i] = paths.poll();
                     }
                 } else {
                     int indexOfFilter = Lists.indexOf(parameterAnnotations,
@@ -100,6 +101,10 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                     } else {
                         args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants)
                                 : constants.pop();
+                        int indexOfType = Lists.indexOf(parameterAnnotations,
+                                a -> ParamType.class.isAssignableFrom(a.getClass()));
+                        if (indexOfType >= 0)
+                            parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
                     }
                 }
             }
