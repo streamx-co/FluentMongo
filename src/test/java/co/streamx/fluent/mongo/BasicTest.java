@@ -27,7 +27,7 @@ public class BasicTest implements CommonTest, BasicTypes {
         Bson filter = extractedTest1(born, born1, string);
 
         assertQuery(filter,
-                "{ \"$or\" : [{ \"born\" : { \"$lt\" : 5 }, \"name\" : \"dfg\" }, { \"born\" : { \"$gte\" : 6 } }] }");
+                "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
         // , \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" }
     }
 
@@ -56,7 +56,7 @@ public class BasicTest implements CommonTest, BasicTypes {
             return and(p.getBorn() < born, p.getName() == string); //
         });
 
-        assertQuery(filter, "{ \"born\" : { \"$lt\" : 5 }, \"name\" : \"dfg\" }");
+        assertQuery(filter, "{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}");
     }
 
     @Test
@@ -70,7 +70,7 @@ public class BasicTest implements CommonTest, BasicTypes {
             return elemMatch(p.getActedMovies(), m -> m.getTagline() == string);
         });
 
-        assertQuery(filter, "{ \"actedMovies\" : { \"$elemMatch\" : { \"tagline\" : \"dfg\" } } }");
+        assertQuery(filter, "{\"actedMovies\": {\"$elemMatch\": {\"tagline\": \"dfg\"}}}");
     }
 
     @Test
@@ -87,7 +87,7 @@ public class BasicTest implements CommonTest, BasicTypes {
         Bson ff = person.filter(p -> filter(f));
 
         assertQuery(ff,
-                "{ \"$or\" : [{ \"born\" : { \"$lt\" : 5 }, \"name\" : \"dfg\" }, { \"born\" : { \"$gte\" : 6 } }] }");
+                "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
         // , \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" }
     }
 
@@ -100,7 +100,7 @@ public class BasicTest implements CommonTest, BasicTypes {
             return include(p.getBorn(), p.getName());
         });
 
-        assertQuery(filter, "{ \"born\" : 1, \"name\" : 1 }");
+        assertQuery(filter, "{\"born\": 1, \"name\": 1}");
     }
 
     @Test
@@ -112,7 +112,7 @@ public class BasicTest implements CommonTest, BasicTypes {
             return fields(include(p.getBorn(), p.getName()), excludeId());
         });
 
-        assertQuery(filter, "{ \"born\" : 1, \"name\" : 1, \"_id\" : 0 }");
+        assertQuery(filter, "{\"born\": 1, \"name\": 1, \"_id\": 0}");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson filter = person.sort(p -> ascending(p.getBorn()));
 
-        assertQuery(filter, "{ \"born\" : 1 }");
+        assertQuery(filter, "{\"born\": 1}");
     }
 
     @Test
@@ -132,7 +132,7 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson filter = person.sort(p -> orderBy(ascending(p.getBorn()), descending(p.getName())));
 
-        assertQuery(filter, "{ \"born\" : 1, \"name\" : -1 }");
+        assertQuery(filter, "{\"born\": 1, \"name\": -1}");
     }
 
     @Test
@@ -143,7 +143,7 @@ public class BasicTest implements CommonTest, BasicTypes {
         String string = "xyz";
         Bson filter = person.update(p -> pullByFilter(elemMatch(p.getActedMovies(), m -> m.getTagline() == string)));
 
-        assertQuery(filter, "{ \"$pull\" : { \"actedMovies\" : { \"$elemMatch\" : { \"tagline\" : \"xyz\" } } } }");
+        assertQuery(filter, "{\"$pull\": {\"actedMovies\": {\"$elemMatch\": {\"tagline\": \"xyz\"}}}}");
     }
 
     @Test
@@ -153,6 +153,6 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson filter = person.index(p -> hashed(p.getBorn()));
 
-        assertQuery(filter, "{ \"born\" : \"hashed\" }");
+        assertQuery(filter, "{\"born\": \"hashed\"}");
     }
 }
