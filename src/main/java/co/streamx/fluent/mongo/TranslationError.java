@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 enum TranslationError {
 
     UNSUPPORTED_EXPRESSION_TYPE("Unsupported operator: {0}"),
+    REQUIRES_EXTERNAL_PARAMETER("Parameter method accepts external parameters only, as an object. "
+            + "Calculations and expressions must be performed out of Lambda. Received: {0}"),
     UNMAPPED_FIELD("Cannot translate property: {0}.") {
         @Override
         public RuntimeException getError(Throwable cause,

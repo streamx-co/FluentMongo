@@ -48,7 +48,7 @@ public class OpsTest implements TutorialTypes, CommonTest {
         collection.find(filter);
 
         filter = FLUENT.filter(
-                r -> r.getStars() >= 2 && r.getStars() < 5 && elemMatch(r.getCategories(), cat -> cat == "Bakery")
+                r -> r.getStars() >= 2 && r.getStars() < 5 && elemMatch(r.getCategories(), cat -> cat.equals("Bakery"))
                         && elemMatch(r.getResults(), re -> re >= 80 && re < 85));
         assertQuery(filter,
                 "{ \"stars\" : { \"$gte\" : 2, \"$lt\" : 5 }, \"categories\" : { \"$elemMatch\" : { \"$eq\" : \"Bakery\" } }, \"results\" : { \"$elemMatch\" : { \"$gte\" : 80, \"$lt\" : 85 } } }");
@@ -56,12 +56,12 @@ public class OpsTest implements TutorialTypes, CommonTest {
 
         List<String> categories = Arrays.asList("Bakery", "Pharm");
 
-        filter = FLUENT.filter(r -> eq(r.getCategories(), categories) && eq(r.getResults(), 3));
+        filter = FLUENT.filter(r -> r.getCategories().containsAll(categories) && r.getResults().contains(3));
         Bson order = FLUENT.sort(r -> ascending(r.getName()));
         Bson projection = FLUENT
                 .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()), excludeId()));
 
-        assertQuery(filter, "{ \"categories\" : [\"Bakery\", \"Pharm\"], \"results\" : 3 }");
+        assertQuery(filter, "{ \"categories\" : { \"$all\" : [\"Bakery\", \"Pharm\"] }, \"results\" : 3 }");
         assertQuery(order, "{ \"name\" : 1 }");
         assertQuery(projection, "{ \"name\" : 1, \"stars\" : 1, \"categories\" : 1, \"_id\" : 0 }");
 

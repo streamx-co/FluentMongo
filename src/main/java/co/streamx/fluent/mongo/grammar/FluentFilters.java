@@ -71,7 +71,7 @@ public interface FluentFilters {
     }
 
     static <TItem extends Comparable<TItem>> boolean in(@FieldName final TItem field,
-                                                        @ParamType(Object.class) final Iterable<TItem> values) {
+                                                        final Iterable<TItem> values) {
         throw new UnsupportedOperationException();
     }
 
@@ -82,7 +82,7 @@ public interface FluentFilters {
     }
 
     static <TItem extends Comparable<TItem>> boolean nin(@FieldName final TItem field,
-                                                         @ParamType(Object.class) final Iterable<TItem> values) {
+                                                         final Iterable<TItem> values) {
         throw new UnsupportedOperationException();
     }
 
@@ -150,7 +150,7 @@ public interface FluentFilters {
     }
 
     static <TItem extends Comparable<TItem>> boolean all(@FieldName final Collection<TItem> field,
-                                                         @ParamType(Object.class) final Iterable<TItem> values) {
+                                                         final Iterable<TItem> values) {
         throw new UnsupportedOperationException();
     }
 
