@@ -10,6 +10,12 @@ enum TranslationError {
     UNSUPPORTED_EXPRESSION_TYPE("Unsupported operator: {0}"),
     REQUIRES_EXTERNAL_PARAMETER("Parameter method accepts external parameters only, as an object. "
             + "Calculations and expressions must be performed out of Lambda. Received: {0}"),
+    REQUIRES_LICENSE("{0} requires a license. Get one at https://fluentjpa.com") {
+        @Override
+        public RuntimeException getError(Object... args) {
+            return new UnsupportedOperationException(MessageFormat.format(pattern, args));
+        }
+    },
     UNMAPPED_FIELD("Cannot translate property: {0}.") {
         @Override
         public RuntimeException getError(Throwable cause,

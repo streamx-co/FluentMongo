@@ -55,10 +55,10 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-		</dependency> -->
+		</dependency>
 		<dependency>
 	        <groupId>org.junit.jupiter</groupId>
 	        <artifactId>junit-jupiter-api</artifactId>
@@ -113,6 +113,11 @@
             <artifactId>ex-tree</artifactId>
 			<version>${ex-tree.version}</version>
 		</dependency>
+		<dependency>
+            <groupId>co.streamx.license3j</groupId>
+            <artifactId>license3j-JVM8</artifactId>
+            <version>${license3j.version}</version>
+        </dependency>
 		<dependency>
 		  <groupId>org.mongodb</groupId>
 		  <artifactId>mongodb-driver-core</artifactId>
@@ -266,5 +271,6 @@
 		<!-- <junit-platform.version>1.5.2</junit-platform.version> -->
 		<ex-tree.version>2.5.9</ex-tree.version>
 		<mongodb-driver.version>3.11.1</mongodb-driver.version>
+		<license3j.version>3.1.2</license3j.version>
 	</properties>
 </project>

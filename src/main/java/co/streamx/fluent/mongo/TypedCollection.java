@@ -22,6 +22,8 @@ public interface TypedCollection<T> {
     }
 
     default Bson update(Function1<T, Update> update) {
+        if (!FluentMongo.checkLicense())
+            throw TranslationError.REQUIRES_LICENSE.getError("UPDATE functionality");
         return FluentMongo.process(update, new FilterInterpreter());
     }
 
