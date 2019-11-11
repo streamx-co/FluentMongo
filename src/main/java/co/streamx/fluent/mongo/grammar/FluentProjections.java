@@ -8,9 +8,14 @@ import com.mongodb.client.model.Projections;
 
 import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.Function;
+import co.streamx.fluent.mongo.notation.NestedExpression;
 
+/**
+ *
+ * Strongly type-safe mappings (forward) to Mongo native {@link Projections} helper methods.
+ *
+ */
 @Function(factory = Projections.class)
 public interface FluentProjections {
     @SafeVarargs

@@ -25,7 +25,7 @@ import com.mongodb.client.MongoCollection;
 
 public class OpsTest implements TutorialTypes, CommonTest {
 
-    private static final TypedCollection<Restaurant> FLUENT = FluentMongo.collection(Restaurant.class);
+    private static final QueryBuilder<Restaurant> FLUENT = FluentMongo.queryBuilder(Restaurant.class);
     private static final MongoCollection<?> collection = mock(MongoCollection.class);
     private static final FindIterable<?> find = mock(FindIterable.class);
 

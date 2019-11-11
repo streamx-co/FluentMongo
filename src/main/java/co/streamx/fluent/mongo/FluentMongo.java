@@ -47,7 +47,7 @@ public final class FluentMongo {
                  items) -> all(collection, items));
     }
 
-    private static final TypedCollection<?> typed = new TypedCollection<Object>() {
+    private static final QueryBuilder<?> typed = new QueryBuilder<Object>() {
     };
 //
 //    public static <T> Bson filter(Function1<T, Boolean> predicate) {
@@ -56,14 +56,20 @@ public final class FluentMongo {
 //        return process(predicate, interpreter);
 //    }
 
+    /**
+     * Create type safe collection query builder
+     */
     @SuppressWarnings("unchecked")
-    public static <T> TypedCollection<T> collection(T collection) {
-        return (TypedCollection<T>) typed;
+    public static <T> QueryBuilder<T> queryBuilder(T collection) {
+        return (QueryBuilder<T>) typed;
     }
 
+    /**
+     * Create type safe collection query builder
+     */
     @SuppressWarnings("unchecked")
-    public static <T> TypedCollection<T> collection(Class<T> collectionType) {
-        return (TypedCollection<T>) typed;
+    public static <T> QueryBuilder<T> queryBuilder(Class<T> collectionType) {
+        return (QueryBuilder<T>) typed;
     }
 
     static <T> Bson process(Function1<T, ?> lambda,

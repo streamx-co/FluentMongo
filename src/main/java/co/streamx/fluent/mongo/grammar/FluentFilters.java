@@ -17,6 +17,9 @@ import co.streamx.fluent.mongo.notation.Function;
 import co.streamx.fluent.mongo.notation.NestedExpression;
 import co.streamx.fluent.mongo.notation.ParamType;
 
+/**
+ * Strongly type-safe mappings (forward) to Mongo native {@link Filters} helper methods.
+ */
 @Function(factory = Filters.class)
 public interface FluentFilters {
 

@@ -6,6 +6,9 @@ import co.streamx.fluent.mongo.notation.FieldName;
 import co.streamx.fluent.mongo.notation.Function;
 import co.streamx.fluent.mongo.notation.NestedExpression;
 
+/**
+ * Strongly type-safe mappings (forward) to Mongo native {@link Sorts} helper methods.
+ */
 @Function(factory = Sorts.class)
 public interface FluentSorts {
 

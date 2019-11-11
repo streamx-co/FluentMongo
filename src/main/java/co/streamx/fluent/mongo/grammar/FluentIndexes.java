@@ -9,6 +9,9 @@ import co.streamx.fluent.mongo.notation.FieldName;
 import co.streamx.fluent.mongo.notation.Function;
 import co.streamx.fluent.mongo.notation.NestedExpression;
 
+/**
+ * Strongly type-safe mappings (forward) to Mongo native {@link Indexes} helper methods.
+ */
 @Function(factory = Indexes.class)
 public interface FluentIndexes {
 

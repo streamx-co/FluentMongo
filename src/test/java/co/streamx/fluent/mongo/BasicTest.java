@@ -35,7 +35,7 @@ public class BasicTest implements CommonTest, BasicTypes {
                                 int born1,
                                 String string) {
         
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
         
         Bson filter = person.filter(p -> {
             return p.getBorn() < born && p.getName() == string || p.getBorn() >= born1; // && regex(p.getName(), ".*",
@@ -50,7 +50,7 @@ public class BasicTest implements CommonTest, BasicTypes {
         int born = 5;
         String string = "dfg";
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.filter(p -> {
             return and(p.getBorn() < born, p.getName() == string); //
@@ -64,7 +64,7 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         String string = "dfg";
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.filter(p -> {
             return elemMatch(p.getActedMovies(), m -> m.getTagline() == string);
@@ -82,7 +82,7 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson f = extractedTest1(born, born1, string);
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson ff = person.filter(p -> filter(f));
 
@@ -94,7 +94,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testProjection() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.project(p -> {
             return include(p.getBorn(), p.getName());
@@ -106,7 +106,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testProjection1() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.project(p -> {
             return fields(include(p.getBorn(), p.getName()), excludeId());
@@ -118,7 +118,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testSort() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.sort(p -> ascending(p.getBorn()));
 
@@ -128,7 +128,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testSort1() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.sort(p -> orderBy(ascending(p.getBorn()), descending(p.getName())));
 
@@ -138,7 +138,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testUpdate() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         String string = "xyz";
         Bson filter = person.update(p -> pullByFilter(elemMatch(p.getActedMovies(), m -> m.getTagline() == string)));
@@ -149,7 +149,7 @@ public class BasicTest implements CommonTest, BasicTypes {
     @Test
     public void testIndex() {
 
-        TypedCollection<Person> person = FluentMongo.collection(Person.class);
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
 
         Bson filter = person.index(p -> hashed(p.getBorn()));
 
