@@ -1,6 +1,6 @@
-# Get in Control of Your Mongo Queries <div style="float:right">![Patent Pending](https://img.shields.io/badge/patent-pending-informational) [![GitHub](https://img.shields.io/github/license/streamx-co/FluentMongo)](LICENSE) ![Java Version](https://img.shields.io/badge/java-%3E%3D%208-success) [![Build Status](https://travis-ci.org/streamx-co/FluentMongo.svg?branch=master)](https://travis-ci.org/streamx-co/FluentMongo) [![Maven Central](https://img.shields.io/maven-central/v/co.streamx.fluent/fluent-mongo?label=maven%20central)](https://search.maven.org/search?q=g:%22co.streamx.fluent%22%20AND%20a:%22fluent-mongo%22)</div>
+# Get in Control of Your Mongo Queries <div style="float:right">![Patent Pending](https://img.shields.io/badge/patent-pending-informational) [![GitHub](https://img.shields.io/github/license/streamx-co/FluentMongo?color=green)](LICENSE) ![Java Version](https://img.shields.io/badge/java-%3E%3D%208-success) [![Build Status](https://travis-ci.org/streamx-co/FluentMongo.svg?branch=master)](https://travis-ci.org/streamx-co/FluentMongo) [![Maven Central](https://img.shields.io/maven-central/v/co.streamx.fluent/fluent-mongo?label=maven%20central)](https://search.maven.org/search?q=g:%22co.streamx.fluent%22%20AND%20a:%22fluent-mongo%22)</div>
 
-Fluent API for writing typesafe Mongo queries in Java.
+Fluent API for writing typesafe Mongo queries in Java. [Sample & Setup](https://github.com/streamx-co/FluentMongo/wiki)
 
 ## Read Operations
 
