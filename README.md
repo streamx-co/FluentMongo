@@ -60,7 +60,7 @@ collection.updateOne(filter, update);
 
 ## License
 
-Fluent Mongo employs a Freemium license model, where some functionality is totally free and more advanced features [require a license](https://fluentjpa.com). Data retrieval expressions (filter, projection, sort, indoex) are free. Data update expressions [require a license](https://fluentjpa.com).
+Fluent Mongo employs a Freemium license model, where some functionality is totally free and more advanced features [require a license](https://fluentjpa.com). Data retrieval expressions (filter, projection, sort, index) are free. Data update expressions [require a license](https://fluentjpa.com).
 
 > This work is dual-licensed under [Affero GPL 3.0](https://opensource.org/licenses/AGPL-3.0) and [Lesser GPL 3.0](https://opensource.org/licenses/LGPL-3.0).
 The source code is licensed under AGPL and official binaries under LGPL.
