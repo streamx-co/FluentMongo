@@ -62,4 +62,7 @@ collection.updateOne(filter, update);
 
 Fluent Mongo employs a Freemium license model, where some functionality is totally free and more advanced features [require a license](https://fluentjpa.com). Data retrieval expressions (filter, projection, sort, indoex) are free. Data update expressions [require a license](https://fluentjpa.com).
 
-> **Note for Forkers**: this library depends on [ExTree library](https://github.com/streamx-co/ExTree), which is licensed under [AGPL-3.0](https://github.com/streamx-co/ExTree/blob/master/LICENSE). It has a special licensing exception for official `Streamx` artifacts only. As a result, any fork of this library must be licensed under AGPL license.
+> This work is dual-licensed under [Affero GPL 3.0](https://opensource.org/licenses/AGPL-3.0) and [Lesser GPL 3.0](https://opensource.org/licenses/LGPL-3.0).
+The source code is licensed under AGPL and official binaries under LGPL.
+
+`SPDX-License-Identifier: AGPL-3.0-only AND LGPL-3.0-only`
