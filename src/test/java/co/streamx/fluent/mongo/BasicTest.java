@@ -26,17 +26,20 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson filter = extractedTest1(born, born1, string);
 
-        assertQuery(filter,
-                "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
-        // , \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" }
+        try {
+            assertQuery(filter, "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
+        } catch (AssertionError e) {
+            assertQuery(filter,
+                    "{\"$or\": [{\"$and\": [{\"born\": {\"$lt\": 5}}, {\"name\": \"dfg\"}]}, {\"born\": {\"$gte\": 6}}]}");
+        }
     }
 
     private Bson extractedTest1(int born,
                                 int born1,
                                 String string) {
-        
+
         QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
-        
+
         Bson filter = person.filter(p -> {
             return p.getBorn() < born && p.getName() == string || p.getBorn() >= born1; // && regex(p.getName(), ".*",
                                                                                         // "")
@@ -56,7 +59,12 @@ public class BasicTest implements CommonTest, BasicTypes {
             return and(p.getBorn() < born, p.getName() == string); //
         });
 
-        assertQuery(filter, "{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}");
+        try {
+            assertQuery(filter, "{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}");
+
+        } catch (AssertionError e) {
+            assertQuery(filter, "{\"$and\": [{\"born\": {\"$lt\": 5}}, {\"name\": \"dfg\"}]}");
+        }
     }
 
     @Test
@@ -86,8 +94,13 @@ public class BasicTest implements CommonTest, BasicTypes {
 
         Bson ff = person.filter(p -> filter(f));
 
-        assertQuery(ff,
-                "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
+        try {
+            assertQuery(ff, "{\"$or\": [{\"born\": {\"$lt\": 5}, \"name\": \"dfg\"}, {\"born\": {\"$gte\": 6}}]}");
+
+        } catch (AssertionError e) {
+            assertQuery(ff,
+                    "{\"$or\": [{\"$and\": [{\"born\": {\"$lt\": 5}}, {\"name\": \"dfg\"}]}, {\"born\": {\"$gte\": 6}}]}");
+        }
         // , \"name\" : { \"$regex\" : \".*\", \"$options\" : \"\" }
     }
 

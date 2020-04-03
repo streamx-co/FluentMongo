@@ -40,7 +40,6 @@ public class OpsTest implements TutorialTypes, CommonTest {
     @Test
     public void finds() {
 
-
         Bson filter = FLUENT.filter(r -> r.getName() == "456 Cookies Shop");
 
         assertQuery(filter, "{\"name\": \"456 Cookies Shop\"}");
@@ -50,8 +49,14 @@ public class OpsTest implements TutorialTypes, CommonTest {
         filter = FLUENT.filter(
                 r -> r.getStars() >= 2 && r.getStars() < 5 && elemMatch(r.getCategories(), cat -> cat.equals("Bakery"))
                         && elemMatch(r.getResults(), re -> re >= 80 && re < 85));
-        assertQuery(filter,
-                "{\"stars\": {\"$gte\": 2, \"$lt\": 5}, \"categories\": {\"$elemMatch\": {\"$eq\": \"Bakery\"}}, \"results\": {\"$elemMatch\": {\"$gte\": 80, \"$lt\": 85}}}");
+        try {
+            assertQuery(filter,
+                    "{\"stars\": {\"$gte\": 2, \"$lt\": 5}, \"categories\": {\"$elemMatch\": {\"$eq\": \"Bakery\"}}, \"results\": {\"$elemMatch\": {\"$gte\": 80, \"$lt\": 85}}}");
+
+        } catch (AssertionError e) {
+            assertQuery(filter,
+                    "{\"$and\": [{\"stars\": {\"$gte\": 2}}, {\"$and\": [{\"stars\": {\"$lt\": 5}}, {\"$and\": [{\"categories\": {\"$elemMatch\": {\"$eq\": \"Bakery\"}}}, {\"results\": {\"$elemMatch\": {\"$and\": [{\"$gte\": 80}, {\"$lt\": 85}]}}}]}]}]}");
+        }
         collection.find(filter);
 
         List<String> categories = Arrays.asList("Bakery", "Pharm");
@@ -61,7 +66,13 @@ public class OpsTest implements TutorialTypes, CommonTest {
         Bson projection = FLUENT
                 .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()), excludeId()));
 
-        assertQuery(filter, "{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}, \"results\": 3}");
+        try {
+            assertQuery(filter, "{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}, \"results\": 3}");
+
+        } catch (AssertionError e) {
+            assertQuery(filter,
+                    "{\"$and\": [{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}}, {\"results\": 3}]}");
+        }
         assertQuery(order, "{\"name\": 1}");
         assertQuery(projection, "{\"name\": 1, \"stars\": 1, \"categories\": 1, \"_id\": 0}");
 
