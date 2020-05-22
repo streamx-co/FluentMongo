@@ -75,8 +75,8 @@ public final class FluentMongo {
 
     static <T> Bson process(Function1<T, ?> lambda,
                             GenericInterpreter interpreter) {
-        if (!checkLicense())
-            throw TranslationError.REQUIRES_LICENSE.getError(DEBUG_MODE);
+//        if (!checkLicense())
+//            throw TranslationError.REQUIRES_LICENSE.getError(DEBUG_MODE);
 
         LambdaExpression<?> e = LambdaExpression.parse(lambda);
         e = (LambdaExpression<?>) Normalizer.get().visit(e);
