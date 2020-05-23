@@ -276,7 +276,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.boot.version>2.2.6.RELEASE</spring.boot.version>
 		<!-- <junit-platform.version>1.5.2</junit-platform.version> -->
-		<ex-tree.version>2.6.1-SNAPSHOT</ex-tree.version>
+		<ex-tree.version>2.7.0</ex-tree.version>
 		<mongodb-driver.version>3.11.2</mongodb-driver.version>
 		<jwt.version>3.10.1</jwt.version>
 	</properties>
