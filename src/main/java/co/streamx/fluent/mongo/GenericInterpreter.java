@@ -13,7 +13,6 @@ import org.bson.conversions.Bson;
 
 import co.streamx.fluent.extree.expression.ConstantExpression;
 import co.streamx.fluent.extree.expression.Expression;
-import co.streamx.fluent.extree.expression.InvocationExpression;
 import co.streamx.fluent.extree.expression.MemberExpression;
 import co.streamx.fluent.extree.expression.NewArrayInitExpression;
 import co.streamx.fluent.extree.expression.ParameterExpression;
@@ -34,8 +33,6 @@ class GenericInterpreter extends SimpleExpressionVisitor {
 
     protected final Deque<String> paths = new ArrayDeque<>();
     protected final Deque<Object> constants = new ArrayDeque<>();
-
-    private List<Expression> currentArguments;
 
     @Override
     public Expression visit(ParameterExpression e) {
@@ -70,43 +67,50 @@ class GenericInterpreter extends SimpleExpressionVisitor {
             Annotation[][] parametersAnnotations = method.getParameterAnnotations();
             Object[] args = new Object[parameterTypes.length];
 
-            int varArg = method.isVarArgs() ? parametersAnnotations.length - 1 : -1;
-            for (int i = 0; i < parametersAnnotations.length; i++) {
+            List<Expression> currentArguments = popContextArguments();
 
-                Expression arg = this.currentArguments.get(i);
-                arg.accept(this);
+            try {
 
-                Annotation[] parameterAnnotations = parametersAnnotations[i];
-                int indexOfField = Lists.indexOf(parameterAnnotations,
-                        a -> FieldName.class.isAssignableFrom(a.getClass()));
-                if (indexOfField >= 0) {
-                    if (i == varArg) {
-                        parameterTypes[i] = String[].class;
-                        args[i] = getVarArgs((NewArrayInitExpression) arg, String[]::new, paths);
-                    } else {
-                        parameterTypes[indexOfField] = String.class;
-                        args[i] = paths.poll();
-                    }
-                } else {
-                    int indexOfFilter = Lists.indexOf(parameterAnnotations,
-                            a -> NestedExpression.class.isAssignableFrom(a.getClass()));
-                    if (indexOfFilter >= 0) {
+                int varArg = method.isVarArgs() ? parametersAnnotations.length - 1 : -1;
+                for (int i = 0; i < parametersAnnotations.length; i++) {
+
+                    Expression arg = currentArguments.get(i);
+                    arg.accept(this);
+
+                    Annotation[] parameterAnnotations = parametersAnnotations[i];
+                    int indexOfField = Lists.indexOf(parameterAnnotations,
+                            a -> FieldName.class.isAssignableFrom(a.getClass()));
+                    if (indexOfField >= 0) {
                         if (i == varArg) {
-                            parameterTypes[i] = Bson[].class;
-                            args[i] = getVarArgs((NewArrayInitExpression) arg, Bson[]::new, bsons);
+                            parameterTypes[i] = String[].class;
+                            args[i] = getVarArgs((NewArrayInitExpression) arg, String[]::new, paths);
                         } else {
-                            parameterTypes[i] = Bson.class;
-                            args[i] = bsons.pop();
+                            parameterTypes[indexOfField] = String.class;
+                            args[i] = paths.poll();
                         }
                     } else {
-                        args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants)
-                                : constants.pop();
-                        int indexOfType = Lists.indexOf(parameterAnnotations,
-                                a -> ParamType.class.isAssignableFrom(a.getClass()));
-                        if (indexOfType >= 0)
-                            parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
+                        int indexOfFilter = Lists.indexOf(parameterAnnotations,
+                                a -> NestedExpression.class.isAssignableFrom(a.getClass()));
+                        if (indexOfFilter >= 0) {
+                            if (i == varArg) {
+                                parameterTypes[i] = Bson[].class;
+                                args[i] = getVarArgs((NewArrayInitExpression) arg, Bson[]::new, bsons);
+                            } else {
+                                parameterTypes[i] = Bson.class;
+                                args[i] = bsons.pop();
+                            }
+                        } else {
+                            args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants)
+                                    : constants.pop();
+                            int indexOfType = Lists.indexOf(parameterAnnotations,
+                                    a -> ParamType.class.isAssignableFrom(a.getClass()));
+                            if (indexOfType >= 0)
+                                parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
+                        }
                     }
                 }
+            } finally {
+                pushContextArguments(currentArguments);
             }
 
             if (func.passThrough())
@@ -138,17 +142,6 @@ class GenericInterpreter extends SimpleExpressionVisitor {
         Lists.reverse(array);
 
         return array;
-    }
-
-    @Override
-    public Expression visit(InvocationExpression e) {
-        List<Expression> currentArguments = this.currentArguments;
-        this.currentArguments = e.getArguments();
-        try {
-            return super.visit(e);
-        } finally {
-            this.currentArguments = currentArguments;
-        }
     }
 
     @Override
