@@ -1,28 +1,28 @@
 # Get in Control of Your Mongo Queries <div style="float:right">![Patent Pending](https://img.shields.io/badge/patent-pending-informational) [![GitHub](https://img.shields.io/badge/license-LGPL_3.0-success)](LICENSE) ![Java Version](https://img.shields.io/badge/java-%3E%3D%208-success) [![Build Status](https://travis-ci.org/streamx-co/FluentMongo.svg?branch=release)](https://travis-ci.org/streamx-co/FluentMongo) [![Maven Central](https://img.shields.io/maven-central/v/co.streamx.fluent/fluent-mongo?label=maven%20central)](https://search.maven.org/search?q=g:%22co.streamx.fluent%22%20AND%20a:%22fluent-mongo%22)</div>
 
-Fluent API for writing typesafe Mongo queries in Java. See wiki for [samples & setup](https://github.com/streamx-co/FluentMongo/wiki).
+FluentMongo is a Mongo Java Driver wrapper for writing typesafe queries. See wiki for [samples & setup](https://github.com/streamx-co/FluentMongo/wiki).
 
 ## Read Operations
 
-Official Mongo Java driver provides [helper methods](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-read-operations/#filters-helper) for writing queries, so the filter condition specification looks like this:
+Basic Mongo Java driver provides [helper methods](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-read-operations/#filters-helper) for writing queries, so the filter condition specification looks like this:
 
 ```java
 collection.find(and(gte("stars", 2), lt("stars", 5), eq("categories", "Bakery")));
 ```
 
-The following example specifies the same filter condition using FluentMongo:
+With FluentMongo wrapper:
 
 ```java
 collection.find(builder.filter(r -> r.getStars() >= 2 && r.getStars() < 5
                                                       && r.getCategories().contains("Bakery")));
 ```
 
-No hard coded strings like `eq("categories", "Bakery")` or strange operators like `lt("stars", 5)`. The filter is a **normal** Java expression, with intellisense, refactoring friendly and compiler verified type safety. Moreover, we even let write `r.getCategories().contains("Bakery")` to make the expression as readable and type safe as possible.
+No hard coded strings like `eq("categories", "Bakery")` or strange operators like `lt("stars", 5)`. The filter is a **normal** Java expression, intellisense and refactoring friendly, with compiler verified type safety. Moreover, we even let write `r.getCategories().contains("Bakery")` to make the expression as readable and type safe as possible.
 
 The full [Sort with Projection](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-read-operations/#sort-with-projections) example from Mongo manual reads like this:
 
 ```java
-QueryBuilder<Restaurant> builder = FluentMongo.queryBuilder(Restaurant.class);
+QueryBuilder<Restaurant> builder = FluentMongo.queryBuilder(Restaurant.class); // can be static
 
 Bson filter     = builder.filter(r -> r.getStars() >= 2 && r.getStars() < 5
                                                         && r.getCategories().contains("Bakery"));
@@ -35,7 +35,7 @@ collection.find(filter).sort(order).projection(projection);
 
 ## Write Operations
 
-[Mongo official driver](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-write-operations/#update-a-single-document):
+[Basic driver](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-write-operations/#update-a-single-document):
 
 ```java
 collection.updateOne(
@@ -45,7 +45,7 @@ collection.updateOne(
                         currentDate("lastModified")));
 ```
 
-FluentMongo:
+With FluentMongo wrapper:
 
 ```java
 // Full intellisense and compiler verified type safety:
@@ -56,7 +56,7 @@ Bson update = builder.update(r -> combine(set(r.getStars(), 1),
 collection.updateOne(filter, update);
 ```
 
-> **Note:** FluentMongo does not replace the official driver. It parses the expression and forwards the call to the suitable helper method in the official driver, ensuring the behavior is same with direct usage of the official driver.
+> **Note:** FluentMongo does not replace the official driver. For each operation it parses the expression and calls the suitable helper method in the driver.
 
 ## License
 
