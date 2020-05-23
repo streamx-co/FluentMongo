@@ -4,7 +4,7 @@ Fluent API for writing typesafe Mongo queries in Java. See wiki for [samples & s
 
 ## Read Operations
 
-Official Mongo Java driver provides [helper methods](https://mongodb.github.io/mongo-java-driver/3.11/driver-async/tutorials/perform-read-operations/#filters-helper) for writing queries, so the filter condition specification looks like this:
+Official Mongo Java driver provides [helper methods](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-read-operations/#filters-helper) for writing queries, so the filter condition specification looks like this:
 
 ```java
 collection.find(and(gte("stars", 2), lt("stars", 5), eq("categories", "Bakery")));
@@ -19,7 +19,7 @@ collection.find(builder.filter(r -> r.getStars() >= 2 && r.getStars() < 5
 
 No hard coded strings like `eq("categories", "Bakery")` or strange operators like `lt("stars", 5)`. The filter is a **normal** Java expression, with intellisense, refactoring friendly and compiler verified type safety. Moreover, we even let write `r.getCategories().contains("Bakery")` to make the expression as readable and type safe as possible.
 
-The full [Sort with Projection](https://mongodb.github.io/mongo-java-driver/3.11/driver-async/tutorials/perform-read-operations/#sort-with-projections) example from Mongo manual reads like this:
+The full [Sort with Projection](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-read-operations/#sort-with-projections) example from Mongo manual reads like this:
 
 ```java
 QueryBuilder<Restaurant> builder = FluentMongo.queryBuilder(Restaurant.class);
@@ -35,7 +35,7 @@ collection.find(filter).sort(order).projection(projection);
 
 ## Write Operations
 
-[Mongo official driver](https://mongodb.github.io/mongo-java-driver/3.11/driver-async/tutorials/perform-write-operations/#update-a-single-document):
+[Mongo official driver](https://mongodb.github.io/mongo-java-driver/4.1/driver/tutorials/perform-write-operations/#update-a-single-document):
 
 ```java
 collection.updateOne(
