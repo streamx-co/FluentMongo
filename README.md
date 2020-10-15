@@ -30,7 +30,7 @@ Bson sort       = builder.sort(r -> ascending(r.getName()));
 Bson projection = builder.project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()),
                                                                                       excludeId()));
 
-collection.find(filter).sort(order).projection(projection);
+collection.find(filter).sort(sort).projection(projection);
 ```
 
 ## Write Operations
