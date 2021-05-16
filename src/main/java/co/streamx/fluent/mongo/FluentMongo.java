@@ -92,7 +92,7 @@ public final class FluentMongo {
      * @param suppressBanner suppresses license banner if license is valid
      * @return true if license is valid
      */
-    @SneakyThrows
+   /* @SneakyThrows
     public static boolean checkLicense(InputStream licStream,
                                        boolean suppressBanner) {
         if (licenseChecked.compareAndSet(false, true)) {
@@ -154,12 +154,12 @@ public final class FluentMongo {
         }
 
         return isLicensed;
-    }
+    }*/
 
     /**
      * A shortcut for {@code checkLicense(null, false)}
      */
-    public static boolean checkLicense() {
+   /* public static boolean checkLicense() {
         return checkLicense(null, false);
-    }
+    }*/
 }

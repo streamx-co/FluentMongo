@@ -113,11 +113,11 @@
             <artifactId>ex-tree</artifactId>
 			<version>${ex-tree.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
-        </dependency>
+        </dependency> -->
 		<dependency>
 		  <groupId>org.mongodb</groupId>
 		  <artifactId>mongodb-driver-core</artifactId>
@@ -276,8 +276,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.boot.version>2.2.6.RELEASE</spring.boot.version>
 		<!-- <junit-platform.version>1.5.2</junit-platform.version> -->
-		<ex-tree.version>2.7.1</ex-tree.version>
-		<mongodb-driver.version>3.11.2</mongodb-driver.version>
+		<ex-tree.version>2.7.2</ex-tree.version>
+		<mongodb-driver.version>4.2.3</mongodb-driver.version>
 		<jwt.version>3.10.1</jwt.version>
 	</properties>
 </project>

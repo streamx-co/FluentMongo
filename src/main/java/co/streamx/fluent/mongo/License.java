@@ -1,4 +1,4 @@
-package co.streamx.fluent.mongo;
+/*package co.streamx.fluent.mongo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -337,4 +337,4 @@ class License {
         System.out.println(dashes);
         System.out.println();
     }
-}
+}*/
