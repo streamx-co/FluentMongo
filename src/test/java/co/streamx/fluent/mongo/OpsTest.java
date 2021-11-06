@@ -2,9 +2,7 @@ package co.streamx.fluent.mongo;
 
 import static co.streamx.fluent.mongo.grammar.FluentFilters.elemMatch;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.eq;
-import static co.streamx.fluent.mongo.grammar.FluentProjections.excludeId;
-import static co.streamx.fluent.mongo.grammar.FluentProjections.fields;
-import static co.streamx.fluent.mongo.grammar.FluentProjections.include;
+import static co.streamx.fluent.mongo.grammar.FluentProjections.*;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.ascending;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.combine;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.currentDate;
@@ -16,6 +14,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mongodb.client.model.Projections;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -63,8 +63,15 @@ public class OpsTest implements TutorialTypes, CommonTest {
 
         filter = FLUENT.filter(r -> r.getCategories().containsAll(categories) && r.getResults().contains(3));
         Bson order = FLUENT.sort(r -> ascending(r.getName()));
+
+        Bson computed = Projections.computed(
+                "firstCategory",
+                new Document("$arrayElemAt", Arrays.asList("$categories", 0))
+        );
+
         Bson projection = FLUENT
-                .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()), excludeId()));
+                .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()),
+                        computed(computed), excludeId()));
 
         try {
             assertQuery(filter, "{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}, \"results\": 3}");
@@ -74,7 +81,7 @@ public class OpsTest implements TutorialTypes, CommonTest {
                     "{\"$and\": [{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}}, {\"results\": 3}]}");
         }
         assertQuery(order, "{\"name\": 1}");
-        assertQuery(projection, "{\"name\": 1, \"stars\": 1, \"categories\": 1, \"_id\": 0}");
+        assertQuery(projection, "{\"name\": 1, \"stars\": 1, \"categories\": 1, \"firstCategory\": {\"$arrayElemAt\": [\"$categories\", 0]}, \"_id\": 0}");
 
         collection.find(filter).sort(order).projection(projection);
     }

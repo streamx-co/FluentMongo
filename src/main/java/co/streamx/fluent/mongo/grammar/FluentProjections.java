@@ -18,6 +18,12 @@ import co.streamx.fluent.mongo.notation.NestedExpression;
  */
 @Function(factory = Projections.class)
 public interface FluentProjections {
+
+    @Function(factory = Object.class, passThrough = true)
+    static Projection computed(Bson computed) {
+        throw new UnsupportedOperationException();
+    }
+
     @SafeVarargs
     static <TItem> Projection include(@FieldName TItem... field) {
         throw new UnsupportedOperationException();
@@ -43,6 +49,10 @@ public interface FluentProjections {
 
     static <TItem> Projection elemMatch(@FieldName Collection<TItem> field,
                                         Bson filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem> Projection meta(@FieldName TItem field, String metaFieldName) {
         throw new UnsupportedOperationException();
     }
 
