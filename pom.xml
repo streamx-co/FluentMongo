@@ -214,7 +214,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>3.2.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -227,7 +227,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.1.1</version>
+						<version>3.4.1</version>
 						<configuration>
 							<links>
 								<link>http://docs.oracle.com/javase/8/docs/api</link>
@@ -277,7 +277,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.boot.version>2.2.6.RELEASE</spring.boot.version>
 		<!-- <junit-platform.version>1.5.2</junit-platform.version> -->
-		<ex-tree.version>2.7.2</ex-tree.version>
+		<ex-tree.version>2.7.4</ex-tree.version>
 		<mongodb-driver.version>4.3.4</mongodb-driver.version>
 		<jwt.version>3.10.1</jwt.version>
 		<lombok-version>1.18.20</lombok-version>
