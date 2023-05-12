@@ -2,25 +2,33 @@ package co.streamx.fluent.mongo.grammar;
 
 import java.util.Collection;
 
+import co.streamx.fluent.mongo.notation.*;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.model.Projections;
 
 import co.streamx.fluent.mongo.functions.Function1;
-import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.Function;
-import co.streamx.fluent.mongo.notation.NestedExpression;
 
 /**
- *
  * Strongly type-safe mappings (forward) to Mongo native {@link Projections} helper methods.
- *
  */
 @Function(factory = Projections.class)
 public interface FluentProjections {
 
+    /**
+     * Fallback for the case when the type safe variant cannot be built.
+     * @param computed Prebuilt computed field Document
+     */
     @Function(factory = Object.class, passThrough = true)
-    static Projection computed(Bson computed) {
+    static Projection computed(@Local Bson computed) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem, TExpression> Projection computed(@FieldName TItem field, @ParamType(Object.class) @NestedExpression TExpression expression) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem> Projection computedSearchMeta(@FieldName TItem field) {
         throw new UnsupportedOperationException();
     }
 
@@ -57,6 +65,14 @@ public interface FluentProjections {
     }
 
     static <TItem> Projection metaTextScore(@FieldName TItem field) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem> Projection metaSearchScore(@FieldName TItem field) {
+        throw new UnsupportedOperationException();
+    }
+
+    static <TItem> Projection metaSearchHighlights(@FieldName TItem field) {
         throw new UnsupportedOperationException();
     }
 

@@ -3,6 +3,7 @@ package co.streamx.fluent.mongo;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.elemMatch;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.eq;
 import static co.streamx.fluent.mongo.grammar.FluentProjections.*;
+import static co.streamx.fluent.mongo.grammar.FluentArrayOperators.*;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.ascending;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.combine;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.currentDate;
@@ -14,8 +15,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mongodb.client.model.Projections;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import com.mongodb.client.MongoCollection;
 
 public class OpsTest implements TutorialTypes, CommonTest {
 
-    private static final QueryBuilder<Restaurant> FLUENT = FluentMongo.queryBuilder(Restaurant.class);
+    private static final QueryBuilder<RestaurantProjection> FLUENT = FluentMongo.queryBuilder(RestaurantProjection.class);
     private static final MongoCollection<?> collection = mock(MongoCollection.class);
     private static final FindIterable<?> find = mock(FindIterable.class);
 
@@ -64,14 +63,13 @@ public class OpsTest implements TutorialTypes, CommonTest {
         filter = FLUENT.filter(r -> r.getCategories().containsAll(categories) && r.getResults().contains(3));
         Bson order = FLUENT.sort(r -> ascending(r.getName()));
 
-        Bson computed = Projections.computed(
-                "firstCategory",
-                new Document("$arrayElemAt", Arrays.asList("$categories", 0))
-        );
-
         Bson projection = FLUENT
                 .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()),
-                        computed(computed), excludeId()));
+                        computed(
+                                r.getFirstCategory(),
+                                arrayElemAt(r.getCategories(), 0)
+                        ),
+                        excludeId()));
 
         try {
             assertQuery(filter, "{\"categories\": {\"$all\": [\"Bakery\", \"Pharm\"]}, \"results\": 3}");

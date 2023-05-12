@@ -12,6 +12,7 @@ import static co.streamx.fluent.mongo.grammar.FluentSorts.descending;
 import static co.streamx.fluent.mongo.grammar.FluentSorts.orderBy;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.pullByFilter;
 
+import co.streamx.fluent.mongo.grammar.FluentIndexes;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
 
@@ -167,5 +168,15 @@ public class BasicTest implements CommonTest, BasicTypes {
         Bson filter = person.index(p -> hashed(p.getBorn()));
 
         assertQuery(filter, "{\"born\": \"hashed\"}");
+    }
+
+    @Test
+    public void testAscIndex() {
+
+        QueryBuilder<Person> person = FluentMongo.queryBuilder(Person.class);
+
+        Bson filter = person.index(p -> FluentIndexes.ascending(p.getBorn()));
+
+        assertQuery(filter, "{\"born\": 1}");
     }
 }

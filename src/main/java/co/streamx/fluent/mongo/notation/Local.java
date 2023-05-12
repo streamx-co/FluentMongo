@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  * context.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Local {
 }

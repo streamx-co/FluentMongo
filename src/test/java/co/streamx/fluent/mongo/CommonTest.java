@@ -9,6 +9,11 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 
 import com.mongodb.MongoClientSettings;
+import org.springframework.util.StreamUtils;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface CommonTest {
 
@@ -28,5 +33,9 @@ public interface CommonTest {
         String json = bson.toBsonDocument(null, pojoCodecRegistry).toJson();
         System.out.println(json);
         return json;
+    }
+
+    static String print(Iterable<Bson> bsons) {
+        return StreamSupport.stream(bsons.spliterator(), false).map(CommonTest::print).collect(Collectors.joining(","));
     }
 }

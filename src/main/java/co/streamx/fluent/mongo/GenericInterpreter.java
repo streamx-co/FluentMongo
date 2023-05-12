@@ -9,18 +9,10 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.IntFunction;
 
+import co.streamx.fluent.extree.expression.*;
+import co.streamx.fluent.mongo.notation.*;
 import org.bson.conversions.Bson;
 
-import co.streamx.fluent.extree.expression.ConstantExpression;
-import co.streamx.fluent.extree.expression.Expression;
-import co.streamx.fluent.extree.expression.MemberExpression;
-import co.streamx.fluent.extree.expression.NewArrayInitExpression;
-import co.streamx.fluent.extree.expression.ParameterExpression;
-import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
-import co.streamx.fluent.mongo.notation.FieldName;
-import co.streamx.fluent.mongo.notation.Function;
-import co.streamx.fluent.mongo.notation.NestedExpression;
-import co.streamx.fluent.mongo.notation.ParamType;
 import lombok.SneakyThrows;
 
 class GenericInterpreter extends SimpleExpressionVisitor {
@@ -74,10 +66,18 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                 int varArg = method.isVarArgs() ? parametersAnnotations.length - 1 : -1;
                 for (int i = 0; i < parametersAnnotations.length; i++) {
 
+                    Annotation[] parameterAnnotations = parametersAnnotations[i];
+                    int indexOfLocal = Lists.indexOf(parameterAnnotations,
+                            a -> Local.class.isAssignableFrom(a.getClass()));
+
                     Expression arg = currentArguments.get(i);
+                    if (indexOfLocal >= 0) {
+                        if (arg.getExpressionType() != ExpressionType.Parameter &&
+                                arg.getExpressionType() != ExpressionType.Constant)
+                            throw TranslationError.REQUIRES_EXTERNAL_PARAMETER.getError(arg);
+                    }
                     arg.accept(this);
 
-                    Annotation[] parameterAnnotations = parametersAnnotations[i];
                     int indexOfField = Lists.indexOf(parameterAnnotations,
                             a -> FieldName.class.isAssignableFrom(a.getClass()));
                     if (indexOfField >= 0) {
@@ -89,23 +89,26 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                             args[i] = paths.poll();
                         }
                     } else {
+                        int indexOfType = Lists.indexOf(parameterAnnotations,
+                                a -> ParamType.class.isAssignableFrom(a.getClass()));
+                        if (indexOfType >= 0)
+                            parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
+
                         int indexOfFilter = Lists.indexOf(parameterAnnotations,
                                 a -> NestedExpression.class.isAssignableFrom(a.getClass()));
                         if (indexOfFilter >= 0) {
                             if (i == varArg) {
-                                parameterTypes[i] = Bson[].class;
+                                if (indexOfType < 0)
+                                    parameterTypes[i] = Bson[].class;
                                 args[i] = getVarArgs((NewArrayInitExpression) arg, Bson[]::new, bsons);
                             } else {
-                                parameterTypes[i] = Bson.class;
+                                if (indexOfType < 0)
+                                    parameterTypes[i] = Bson.class;
                                 args[i] = bsons.pop();
                             }
                         } else {
                             args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants)
                                     : constants.pop();
-                            int indexOfType = Lists.indexOf(parameterAnnotations,
-                                    a -> ParamType.class.isAssignableFrom(a.getClass()));
-                            if (indexOfType >= 0)
-                                parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
                         }
                     }
                 }

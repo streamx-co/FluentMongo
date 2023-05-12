@@ -18,6 +18,11 @@ public interface TutorialTypes {
     }
 
     @Data
+    class RestaurantProjection extends Restaurant {
+        private String firstCategory;
+    }
+
+    @Data
     class Contact {
         private String phone;
     }
