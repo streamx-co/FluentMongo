@@ -8,20 +8,22 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 import co.streamx.fluent.extree.expression.*;
 import co.streamx.fluent.mongo.notation.*;
-import org.bson.conversions.Bson;
 
 import lombok.SneakyThrows;
 
-class GenericInterpreter extends SimpleExpressionVisitor {
+abstract class GenericInterpreter<T> extends SimpleExpressionVisitor {
 
-    public Bson popResult() {
+    public T getResult(Class<?> resultType) {
         return bsons.pop();
     }
 
-    protected final Deque<Bson> bsons = new ArrayDeque<>();
+    protected abstract Class<T> getType();
+
+    protected final Deque<T> bsons = new ArrayDeque<>();
 
     protected final Deque<String> paths = new ArrayDeque<>();
     protected final Deque<Object> constants = new ArrayDeque<>();
@@ -37,6 +39,21 @@ class GenericInterpreter extends SimpleExpressionVisitor {
             } finally {
                 pushContextArguments(args);
             }
+        }
+        return e;
+    }
+
+    private <X> Class<X[]> getArrayType(Class<X> clazz) {
+        return (Class<X[]>) Array.newInstance(clazz, 0).getClass();
+    }
+
+    protected Object pollTarget(Class<?> type) {
+        return paths.poll();
+    }
+
+    private static Expression removeCasts(Expression e) {
+        while (e.getExpressionType() == ExpressionType.Convert) {
+            e = ((UnaryExpression) e).getFirst();
         }
         return e;
     }
@@ -68,25 +85,29 @@ class GenericInterpreter extends SimpleExpressionVisitor {
 
                     Annotation[] parameterAnnotations = parametersAnnotations[i];
                     int indexOfLocal = Lists.indexOf(parameterAnnotations,
-                            a -> Local.class.isAssignableFrom(a.getClass()));
+                            a -> a instanceof Local);
 
-                    Expression arg = currentArguments.get(i);
+                    Expression arg = removeCasts(currentArguments.get(i));
                     if (indexOfLocal >= 0) {
                         if (arg.getExpressionType() != ExpressionType.Parameter &&
-                                arg.getExpressionType() != ExpressionType.Constant)
+                                arg.getExpressionType() != ExpressionType.Constant &&
+                                !(arg.getExpressionType() == ExpressionType.Lambda && ((LambdaExpression<?>)arg).isMethodRef()))
                             throw TranslationError.REQUIRES_EXTERNAL_PARAMETER.getError(arg);
+                    } else {
+                        arg.accept(this);
                     }
-                    arg.accept(this);
 
                     int indexOfField = Lists.indexOf(parameterAnnotations,
-                            a -> FieldName.class.isAssignableFrom(a.getClass()));
+                            a -> a instanceof FieldName);
                     if (indexOfField >= 0) {
+                        FieldName field = (FieldName) parameterAnnotations[indexOfField];
                         if (i == varArg) {
-                            parameterTypes[i] = String[].class;
-                            args[i] = getVarArgs((NewArrayInitExpression) arg, String[]::new, paths);
+                            parameterTypes[i] = Array.newInstance(field.type(), 0).getClass();
+                            args[i] = getVarArgs((NewArrayInitExpression) arg,
+                                    (int length) -> (Object[]) Array.newInstance(field.type(), length), () -> pollTarget(field.type()));
                         } else {
-                            parameterTypes[indexOfField] = String.class;
-                            args[i] = paths.poll();
+                            parameterTypes[indexOfField] = field.type();
+                            args[i] = pollTarget(field.type());
                         }
                     } else {
                         int indexOfType = Lists.indexOf(parameterAnnotations,
@@ -94,20 +115,26 @@ class GenericInterpreter extends SimpleExpressionVisitor {
                         if (indexOfType >= 0)
                             parameterTypes[i] = ((ParamType) parameterAnnotations[indexOfType]).value();
 
+                        if (indexOfLocal >= 0) {
+                            args[i] = arg;
+                            continue;
+                        }
+
                         int indexOfFilter = Lists.indexOf(parameterAnnotations,
-                                a -> NestedExpression.class.isAssignableFrom(a.getClass()));
+                                a -> a instanceof NestedExpression);
                         if (indexOfFilter >= 0) {
                             if (i == varArg) {
                                 if (indexOfType < 0)
-                                    parameterTypes[i] = Bson[].class;
-                                args[i] = getVarArgs((NewArrayInitExpression) arg, Bson[]::new, bsons);
+                                    parameterTypes[i] = getArrayType(getType());
+                                args[i] = getVarArgs((NewArrayInitExpression) arg, (int n) ->
+                                        (T[]) Array.newInstance(getType(), n), bsons::poll);
                             } else {
                                 if (indexOfType < 0)
-                                    parameterTypes[i] = Bson.class;
+                                    parameterTypes[i] = getType();
                                 args[i] = bsons.pop();
                             }
                         } else {
-                            args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants)
+                            args[i] = i == varArg ? getVarArgs((NewArrayInitExpression) arg, null, constants::poll)
                                     : constants.pop();
                         }
                     }
@@ -117,10 +144,10 @@ class GenericInterpreter extends SimpleExpressionVisitor {
             }
 
             if (func.passThrough())
-                bsons.push((Bson) args[0]);
+                bsons.push((T) args[0]);
             else {
                 Method target = func.factory().getMethod(name, parameterTypes);
-                bsons.push((Bson) target.invoke(null, args));
+                bsons.push((T) target.invoke(null, args));
             }
         } else {
 
@@ -132,15 +159,14 @@ class GenericInterpreter extends SimpleExpressionVisitor {
         return e;
     }
 
-    private static <T> T[] getVarArgs(NewArrayInitExpression nai,
-                                      IntFunction<T[]> creator,
-                                      Deque<T> source) {
+    protected static Object[] getVarArgs(NewArrayInitExpression nai,
+                                         IntFunction<Object[]> creator,
+                                         Supplier<Object> source) {
         List<Expression> initializers = nai.getInitializers();
         int size = initializers.size();
-        @SuppressWarnings("unchecked")
-        T[] array = creator != null ? creator.apply(size) : (T[]) Array.newInstance(nai.getComponentType(), size);
+        Object[] array = creator != null ? creator.apply(size) : (Object[]) Array.newInstance(nai.getComponentType(), size);
         for (int i = 0; i < size; i++)
-            array[i] = source.pop();
+            array[i] = source.get();
 
         Lists.reverse(array);
 

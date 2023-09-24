@@ -24,7 +24,7 @@ import com.mongodb.client.MongoCollection;
 
 public class OpsTest implements TutorialTypes, CommonTest {
 
-    private static final QueryBuilder<RestaurantProjection> FLUENT = FluentMongo.queryBuilder(RestaurantProjection.class);
+    private static final QueryBuilder<Restaurant> FLUENT = FluentMongo.queryBuilder(Restaurant.class);
     private static final MongoCollection<?> collection = mock(MongoCollection.class);
     private static final FindIterable<?> find = mock(FindIterable.class);
 
@@ -64,9 +64,9 @@ public class OpsTest implements TutorialTypes, CommonTest {
         Bson order = FLUENT.sort(r -> ascending(r.getName()));
 
         Bson projection = FLUENT
-                .project(r -> fields(include(r.getName(), r.getStars(), r.getCategories()),
+                .<RestaurantProjection>project((r, p) -> fields(include(p.getName(), p.getStars(), p.getCategories()),
                         computed(
-                                r.getFirstCategory(),
+                                p.getFirstCategory(),
                                 arrayElemAt(r.getCategories(), 0)
                         ),
                         excludeId()));

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.function.BiFunction;
 
 @FunctionalInterface
-public interface Function2<T, U, R> extends BiFunction<T, U, R>, Serializable {
+public interface Function2<T, U, R> extends BiFunction<T, U, R>, Functional, Serializable {
 
     default Function2<T, U, Boolean> and(Function2<T, U, Boolean> other) {
         return (t,

@@ -1,5 +1,6 @@
 package co.streamx.fluent.mongo;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
@@ -17,9 +18,13 @@ import co.streamx.fluent.extree.expression.MemberExpression;
 import co.streamx.fluent.extree.expression.ParameterExpression;
 import co.streamx.fluent.extree.expression.SimpleExpressionVisitor;
 import co.streamx.fluent.extree.expression.UnaryExpression;
+import co.streamx.fluent.mongo.notation.Function;
 import co.streamx.fluent.mongo.notation.Local;
 
 final class Normalizer extends SimpleExpressionVisitor {
+
+    private final List<Expression> localLambdas = new ArrayList<>();
+    private final LambdaExpressionFinder lambdaExpressionFinder = new LambdaExpressionFinder();
 
     public static Normalizer get() {
         return new Normalizer();
@@ -110,6 +115,39 @@ final class Normalizer extends SimpleExpressionVisitor {
             }
         }
 
+        boolean isVisitingFunction = method.isAnnotationPresent(Function.class);
+
+        if (!isVisitingFunction)
+            isVisitingFunction = method.getDeclaringClass().isAnnotationPresent(Function.class);
+
+        if (isVisitingFunction) {
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+            for (int i = 0; i < parameterAnnotations.length; i++) {
+                Annotation[] parameterAnnotation = parameterAnnotations[i];
+                for (Annotation annotation : parameterAnnotation) {
+                    if (annotation instanceof Local) {
+                        e.getArguments().get(i).accept(lambdaExpressionFinder);
+                    }
+                }
+            }
+        }
+
         return super.visit(e);
+    }
+
+    @Override
+    public Expression visit(LambdaExpression<?> e) {
+        return localLambdas.contains(e) ?
+                super.visit(e) :
+                super.visit(e.parseMethodRef());
+    }
+
+    private class LambdaExpressionFinder extends SimpleExpressionVisitor {
+
+        @Override
+        public Expression visit(LambdaExpression<?> e) {
+            localLambdas.add(e);
+            return super.visit(e);
+        }
     }
 }

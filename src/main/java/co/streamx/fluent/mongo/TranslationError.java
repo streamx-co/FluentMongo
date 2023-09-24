@@ -9,7 +9,7 @@ enum TranslationError {
 
     UNSUPPORTED_EXPRESSION_TYPE("Unsupported operator: {0}"),
     REQUIRES_EXTERNAL_PARAMETER("Parameter can be passed as variable or constant. "
-            + "Calculations and expressions must be performed outside of Lambda. Received: '{0}'"),
+            + "Calculations and expressions must be performed outside of Lambda. Received: \"{0}\""),
     REQUIRES_LICENSE("{0} requires a license. Get one at https://fluentjpa.com") {
         @Override
         public RuntimeException getError(Object... args) {

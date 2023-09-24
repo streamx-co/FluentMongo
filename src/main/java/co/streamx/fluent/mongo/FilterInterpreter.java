@@ -9,7 +9,7 @@ import co.streamx.fluent.extree.expression.Expression;
 import co.streamx.fluent.extree.expression.ExpressionType;
 import co.streamx.fluent.extree.expression.UnaryExpression;
 
-final class FilterInterpreter extends GenericInterpreter {
+final class FilterInterpreter extends BsonGenericInterpreter {
 
     @Override
     public Expression visit(BinaryExpression e) {

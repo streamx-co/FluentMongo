@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 @FunctionalInterface
-public interface Function1<T, R> extends Function<T, R>, Serializable {
+public interface Function1<T, R> extends Function<T, R>, Functional, Serializable {
 
     default Function1<T, Boolean> and(Function1<T, Boolean> other) {
         return (t) -> (Boolean) apply(t) && other.apply(t);

@@ -13,8 +13,11 @@ import static co.streamx.fluent.mongo.grammar.FluentSorts.orderBy;
 import static co.streamx.fluent.mongo.grammar.FluentUpdates.pullByFilter;
 
 import co.streamx.fluent.mongo.grammar.FluentIndexes;
+import com.mongodb.client.model.mql.MqlValue;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
+
+import static com.mongodb.client.model.mql.MqlValues.current;
 
 public class BasicTest implements CommonTest, BasicTypes {
 
@@ -178,5 +181,15 @@ public class BasicTest implements CommonTest, BasicTypes {
         Bson filter = person.index(p -> FluentIndexes.ascending(p.getBorn()));
 
         assertQuery(filter, "{\"born\": 1}");
+    }
+
+    @Test
+    public void testMql() {
+
+        QueryBuilder<Movie> person = FluentMongo.queryBuilder(Movie.class);
+
+        MqlValue mql = person.mql(current(), p -> p.getDirector().getBorn());
+
+        System.out.println(mql);
     }
 }

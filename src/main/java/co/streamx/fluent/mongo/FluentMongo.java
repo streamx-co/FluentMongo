@@ -3,19 +3,11 @@ package co.streamx.fluent.mongo;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.all;
 import static co.streamx.fluent.mongo.grammar.FluentFilters.eq;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.management.ManagementFactory;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
+import co.streamx.fluent.mongo.functions.Functional;
+import com.mongodb.client.model.mql.MqlValue;
 import org.bson.conversions.Bson;
 
 import co.streamx.fluent.extree.expression.LambdaExpression;
@@ -23,7 +15,6 @@ import co.streamx.fluent.mongo.functions.Function1;
 import co.streamx.fluent.mongo.functions.Function2;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -73,8 +64,8 @@ public final class FluentMongo {
         return (QueryBuilder<T>) typed;
     }
 
-    static <T> Bson process(Function1<T, ?> lambda,
-                            GenericInterpreter interpreter) {
+    private static <F, T> T process(Functional lambda,
+                            GenericInterpreter<T> interpreter) {
 //        if (!checkLicense())
 //            throw TranslationError.REQUIRES_LICENSE.getError(DEBUG_MODE);
 
@@ -82,7 +73,17 @@ public final class FluentMongo {
         e = (LambdaExpression<?>) Normalizer.get().visit(e);
         interpreter.visit(e);
 
-        return interpreter.popResult();
+        return interpreter.getResult(e.getBody().getResultType());
+    }
+
+    static <T> Bson process(Functional lambda,
+                            BsonGenericInterpreter interpreter) {
+        return process(lambda, (GenericInterpreter<Bson>) interpreter);
+    }
+
+    static <T> MqlValue process(Functional lambda,
+                                MqlInterpreter interpreter) {
+        return process(lambda, (GenericInterpreter<MqlValue>) interpreter);
     }
 
     /**
