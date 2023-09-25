@@ -103,11 +103,8 @@ public class AggregationTest implements CommonTest {
         List<Bson> list = asList(project(fields(
                 computed("availableShowtimes", showtimes
                         .filter(showtimeDoc -> showtimeBuilder.mql(showtimeDoc, showtime -> {
-                            Long totalSeats = sum(showtime.getSeats(),  n -> {
-//                                System.out.println(n);
-                                return (MqlNumber)n;
-                            }); //, n -> (MqlNumber)n
-                            Integer ticketsBought = showtime.getTicketsBought();
+                            long totalSeats = sum(showtime.getSeats(), n -> (MqlNumber)n);
+                            int ticketsBought = showtime.getTicketsBought();
                             return ticketsBought < totalSeats;
                         }))
         ))));
@@ -120,12 +117,19 @@ public class AggregationTest implements CommonTest {
 
         QueryBuilder<BasicTypes.Movie> person = FluentMongo.queryBuilder(BasicTypes.Movie.class);
 
-        MqlValue mql = person.mql(current(), p -> p.getDirector().getBorn());
+//        MqlValue mql = person.mql(current(), p -> p.getDirector().getBorn());
 
 
         MqlArray<MqlDocument> showtimes = current().getArray("showtimes");
         List<Bson> list = asList(project(fields(
-                computed("availableShowtimes", mql)
+                computed("availableShowtimes", showtimes
+                        .filter(showtime -> {
+                            MqlArray<MqlInteger> seats = showtime.getArray("seats");
+                            MqlNumber totalSeats = seats.sum(n -> n);
+                            MqlInteger ticketsBought = showtime.getInteger("ticketsBought");
+                            MqlBoolean isAvailable = ticketsBought.lt(totalSeats);
+                            return isAvailable;
+                        }))
         )));
 
         CommonTest.print(list);

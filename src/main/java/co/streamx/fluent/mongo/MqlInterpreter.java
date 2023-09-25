@@ -1,7 +1,17 @@
 package co.streamx.fluent.mongo;
 
+import co.streamx.fluent.extree.expression.BinaryExpression;
+import co.streamx.fluent.extree.expression.Expression;
+import co.streamx.fluent.extree.expression.LambdaExpression;
+import co.streamx.fluent.mongo.notation.FieldName;
+import co.streamx.fluent.mongo.notation.Function;
 import com.mongodb.client.model.mql.MqlDocument;
 import com.mongodb.client.model.mql.MqlValue;
+import lombok.SneakyThrows;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 class MqlInterpreter extends GenericInterpreter<MqlValue> {
 
@@ -18,8 +28,13 @@ class MqlInterpreter extends GenericInterpreter<MqlValue> {
     }
 
     @Override
-    protected Object pollTarget(Class<?> type) {
+    protected Object pollTarget(FieldName targetField) {
         return document.getField(paths.poll());
+    }
+
+    @Override
+    public Expression visit(BinaryExpression e) {
+        return super.visit(e);
     }
 
     @Override
@@ -45,5 +60,30 @@ class MqlInterpreter extends GenericInterpreter<MqlValue> {
 //        throw new IllegalArgumentException("Unsupported type: " + e.getBody().getResultType());
 
         return document.getField(fieldName);
+    }
+
+    @Override
+    @SneakyThrows
+    protected MqlValue invokeFunction(Function func, String name, Class<?>[] parameterTypes, Object obj, Object[] args) {
+
+        if (!func.isStatic()) {
+            obj = args[0];
+            parameterTypes = Arrays.copyOfRange(parameterTypes, 1, parameterTypes.length);
+            args = Arrays.copyOfRange(args, 1, args.length);
+
+            for (int i = 0; i < parameterTypes.length; i++) {
+                Class<?> type = parameterTypes[i];
+                if (type.isInterface() && type.isAnnotationPresent(FunctionalInterface.class)) {
+                    InvocationHandler handler = new LambdaInvocationHandler((LambdaExpression<?>) args[i]);
+                    Object proxy = Proxy.newProxyInstance(
+                            type.getClassLoader(),
+                            new Class[] { type },
+                            handler);
+
+                    args[i] = proxy;
+                }
+            }
+        }
+        return super.invokeFunction(func, name, parameterTypes, obj, args);
     }
 }

@@ -47,7 +47,7 @@ abstract class GenericInterpreter<T> extends SimpleExpressionVisitor {
         return (Class<X[]>) Array.newInstance(clazz, 0).getClass();
     }
 
-    protected Object pollTarget(Class<?> type) {
+    protected Object pollTarget(FieldName targetField) {
         return paths.poll();
     }
 
@@ -104,10 +104,10 @@ abstract class GenericInterpreter<T> extends SimpleExpressionVisitor {
                         if (i == varArg) {
                             parameterTypes[i] = Array.newInstance(field.type(), 0).getClass();
                             args[i] = getVarArgs((NewArrayInitExpression) arg,
-                                    (int length) -> (Object[]) Array.newInstance(field.type(), length), () -> pollTarget(field.type()));
+                                    (int length) -> (Object[]) Array.newInstance(field.type(), length), () -> pollTarget(field));
                         } else {
                             parameterTypes[indexOfField] = field.type();
-                            args[i] = pollTarget(field.type());
+                            args[i] = pollTarget(field);
                         }
                     } else {
                         int indexOfType = Lists.indexOf(parameterAnnotations,
@@ -146,8 +146,8 @@ abstract class GenericInterpreter<T> extends SimpleExpressionVisitor {
             if (func.passThrough())
                 bsons.push((T) args[0]);
             else {
-                Method target = func.factory().getMethod(name, parameterTypes);
-                bsons.push((T) target.invoke(null, args));
+                T result = invokeFunction(func, name, parameterTypes, null, args);
+                bsons.push(result);
             }
         } else {
 
@@ -157,6 +157,12 @@ abstract class GenericInterpreter<T> extends SimpleExpressionVisitor {
         }
 
         return e;
+    }
+
+    @SneakyThrows
+    protected T invokeFunction(Function func, String name, Class<?>[] parameterTypes, Object obj, Object[] args) {
+        Method target = func.factory().getMethod(name, parameterTypes);
+        return (T) target.invoke(obj, args);
     }
 
     protected static Object[] getVarArgs(NewArrayInitExpression nai,

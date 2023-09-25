@@ -10,5 +10,7 @@ import java.lang.annotation.Target;
 public @interface Function {
     Class<?> factory();
 
+    boolean isStatic() default true;
+
     boolean passThrough() default false;
 }

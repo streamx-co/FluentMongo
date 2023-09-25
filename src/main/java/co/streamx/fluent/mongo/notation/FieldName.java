@@ -9,4 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface FieldName {
     Class<?> type() default String.class;
+
+    String factoryMethod() default "";
+    //    Class<?>[] factoryMethodParams() default {}; //must be String at the moment
 }
