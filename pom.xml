@@ -149,7 +149,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.11.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -158,13 +158,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>3.1.2</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.8</version>
+				<version>1.6.13</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -275,11 +275,11 @@
   </reporting>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.boot.version>2.2.6.RELEASE</spring.boot.version>
+		<spring.boot.version>3.1.5</spring.boot.version>
 		<!-- <junit-platform.version>1.5.2</junit-platform.version> -->
-		<ex-tree.version>2.7.4</ex-tree.version>
-		<mongodb-driver.version>4.9.0</mongodb-driver.version>
+		<ex-tree.version>2.7.5</ex-tree.version>
+		<mongodb-driver.version>4.11.0</mongodb-driver.version>
 		<jwt.version>3.10.1</jwt.version>
-		<lombok-version>1.18.20</lombok-version>
+		<lombok-version>1.18.30</lombok-version>
 	</properties>
 </project>
