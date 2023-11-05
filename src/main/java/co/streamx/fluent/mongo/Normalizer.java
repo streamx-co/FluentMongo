@@ -25,6 +25,11 @@ final class Normalizer extends SimpleExpressionVisitor {
         return new Normalizer();
     }
 
+    @Override
+    public Expression visit(LambdaExpression<?> e) {
+        return super.visit(e.parseMethodRef());
+    }
+
     private static boolean isFunctional(Class<?> clazz) {
         if (clazz.isSynthetic())
             return true;
